@@ -26,15 +26,15 @@ const projects = [
 
 export function FeaturedWork() {
   return (
-    <section className="py-32">
+    <section className="py-32 bg-background">
       <div className="container mx-auto px-6">
-        <div className="flex justify-between items-end mb-16">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div>
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">Selected Work</h2>
-            <p className="text-muted-foreground text-lg">Recent digital systems deployed in the region.</p>
+            <h2 className="text-5xl md:text-7xl font-display font-bold mb-4">Selected Work</h2>
+            <p className="text-muted-foreground text-xl max-w-xl">Recent digital systems deployed in the region.</p>
           </div>
           <Link href="/work">
-            <MotionButton variant="outline" className="hidden md:flex">
+            <MotionButton variant="outline" className="hidden md:flex rounded-full px-8">
               View All Projects
             </MotionButton>
           </Link>
@@ -45,29 +45,30 @@ export function FeaturedWork() {
             <GlassCard 
               key={index} 
               hoverEffect 
-              className="group p-0 overflow-hidden cursor-pointer h-[400px] flex flex-col"
+              spotlight
+              className="group p-0 overflow-hidden cursor-pointer h-[500px] flex flex-col border-white/5 bg-white/[0.02]"
             >
-              <div className="relative h-2/3 overflow-hidden">
+              <div className="relative h-3/4 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10 opacity-60" />
                 <img 
                   src={project.image} 
                   alt={project.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
-                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium border border-white/10">
+                <div className="absolute top-6 right-6 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full text-xs font-medium border border-white/10 text-white z-20 shadow-lg">
                   {project.category}
                 </div>
               </div>
               
-              <div className="p-6 flex flex-col flex-grow justify-between bg-card/50 backdrop-blur-sm">
+              <div className="p-8 flex flex-col flex-grow justify-between bg-white/[0.02] backdrop-blur-sm border-t border-white/5 relative z-20">
                 <div>
-                  <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+                  <h3 className="text-2xl font-bold mb-3 flex items-center gap-2 text-white group-hover:text-primary transition-colors">
                     {project.title}
-                    <ArrowUpRight size={18} className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300 text-primary" />
+                    <ArrowUpRight size={20} className="opacity-0 -translate-y-2 translate-x-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300 text-primary" />
                   </h3>
                   <div className="flex gap-2 flex-wrap">
                     {project.tags.map(tag => (
-                      <span key={tag} className="text-xs text-muted-foreground bg-white/5 px-2 py-1 rounded border border-white/5">
+                      <span key={tag} className="text-xs text-muted-foreground bg-white/5 px-3 py-1.5 rounded-full border border-white/5 group-hover:border-white/20 transition-colors">
                         {tag}
                       </span>
                     ))}
@@ -78,9 +79,9 @@ export function FeaturedWork() {
           ))}
         </div>
         
-        <div className="mt-10 md:hidden">
+        <div className="mt-12 md:hidden">
           <Link href="/work">
-            <MotionButton variant="outline" className="w-full">
+            <MotionButton variant="outline" className="w-full rounded-full">
               View All Projects
             </MotionButton>
           </Link>

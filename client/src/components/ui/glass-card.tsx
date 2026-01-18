@@ -1,35 +1,60 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { motion, HTMLMotionProps } from "framer-motion"
+import React, { useRef, useState } from "react";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
-interface GlassCardProps extends HTMLMotionProps<"div"> {
-  children: React.ReactNode
-  className?: string
-  hoverEffect?: boolean
+interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+  className?: string;
+  hoverEffect?: boolean;
+  spotlight?: boolean;
 }
 
-const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
-  ({ children, className, hoverEffect = false, ...props }, ref) => {
+export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
+  ({ children, className, hoverEffect = false, spotlight = true, ...props }, ref) => {
+    const divRef = useRef<HTMLDivElement>(null);
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [opacity, setOpacity] = useState(0);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!divRef.current || !spotlight) return;
+
+      const rect = divRef.current.getBoundingClientRect();
+      setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    };
+
+    const handleMouseEnter = () => {
+      if (spotlight) setOpacity(1);
+    };
+
+    const handleMouseLeave = () => {
+      if (spotlight) setOpacity(0);
+    };
+
     return (
       <motion.div
-        ref={ref}
+        ref={divRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         className={cn(
-          "glass rounded-xl p-6 relative overflow-hidden transition-all duration-300",
-          hoverEffect && "hover:bg-white/10 hover:shadow-2xl hover:border-white/20 group",
+          "glass-card relative overflow-hidden rounded-xl transition-all duration-500",
+          hoverEffect && "hover:border-white/20 hover:translate-y-[-4px]",
           className
         )}
-        initial={hoverEffect ? { y: 0 } : undefined}
-        whileHover={hoverEffect ? { y: -5 } : undefined}
-        {...props}
+        {...props as any}
       >
-        {hoverEffect && (
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        {spotlight && (
+          <div
+            className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
+            style={{
+              opacity,
+              background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(255,255,255,0.06), transparent 40%)`,
+            }}
+          />
         )}
-        {children}
+        <div className="relative z-10 h-full">{children}</div>
       </motion.div>
-    )
+    );
   }
-)
-GlassCard.displayName = "GlassCard"
-
-export { GlassCard }
+);
+GlassCard.displayName = "GlassCard";

@@ -95,7 +95,7 @@ export function LeadForm() {
             <p className="text-muted-foreground text-lg">Tell us about your vision. We'll handle the systems.</p>
           </div>
 
-          <GlassCard className="p-8 md:p-12 border-primary/20">
+          <GlassCard className="p-8 md:p-12 border-primary/20" spotlight>
             {/* Progress Bar */}
             <div className="flex justify-between mb-8 relative">
               <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/10 -translate-y-1/2 -z-10" />

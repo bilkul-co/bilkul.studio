@@ -34,47 +34,53 @@ const services = [
 
 export function ServicesGrid() {
   return (
-    <section className="py-32 relative">
-      <div className="container mx-auto px-6">
-        <div className="mb-20">
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">Our Capabilities</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl">
-            We don't just build pages; we build engines for growth.
-          </p>
+    <section className="py-32 relative bg-background">
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="mb-20 flex flex-col md:flex-row justify-between items-end gap-8">
+          <div>
+            <h2 className="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tight">Our Capabilities</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              We don't just build pages; we build engines for growth.
+            </p>
+          </div>
+          <Link href="/services">
+             <a className="text-primary hover:text-white transition-colors flex items-center gap-2 text-lg font-medium group">
+                View All Services <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+             </a>
+          </Link>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
-            <GlassCard key={index} hoverEffect className="flex flex-col h-full min-h-[300px]">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 text-primary">
-                <service.icon size={24} />
+            <GlassCard key={index} hoverEffect spotlight className="flex flex-col h-full min-h-[340px] p-8 group">
+              <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-8 text-white group-hover:scale-110 group-hover:bg-primary group-hover:border-primary transition-all duration-500 shadow-xl">
+                <service.icon size={28} />
               </div>
-              <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-              <p className="text-muted-foreground mb-8 flex-grow">{service.description}</p>
-              <Link href="/services">
-                <a className="inline-flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-                  Learn more <ArrowRight className="ml-2 h-4 w-4" />
-                </a>
-              </Link>
+              <h3 className="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">{service.title}</h3>
+              <p className="text-muted-foreground mb-8 flex-grow leading-relaxed text-lg">{service.description}</p>
+              <div className="flex items-center text-sm font-medium text-white/50 group-hover:text-white transition-colors">
+                 Learn more <ArrowRight className="ml-2 h-4 w-4 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all" />
+              </div>
             </GlassCard>
           ))}
 
           {/* AI Highlight Card */}
-          <GlassCard hoverEffect className="relative overflow-hidden border-primary/30 bg-gradient-to-br from-primary/5 to-secondary/5 group">
-            <div className="absolute -right-20 -bottom-20 w-64 h-64 opacity-20 transition-opacity group-hover:opacity-40">
+          <GlassCard hoverEffect spotlight className="relative overflow-hidden border-primary/40 bg-gradient-to-br from-primary/10 to-secondary/10 group p-0">
+            <div className="absolute inset-0 bg-primary/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <div className="absolute -right-20 -bottom-20 w-80 h-80 opacity-40 transition-transform duration-700 group-hover:scale-110 group-hover:rotate-12">
               <img src={accentImg} alt="" className="w-full h-full object-cover mix-blend-screen" />
             </div>
             
-            <div className="relative z-10 flex flex-col h-full min-h-[300px]">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-violet-500 flex items-center justify-center mb-6 text-white shadow-lg shadow-primary/20">
-                <Bot size={24} />
+            <div className="relative z-10 flex flex-col h-full min-h-[340px] p-8">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-blue-500 to-violet-500 flex items-center justify-center mb-8 text-white shadow-lg shadow-primary/20">
+                <Bot size={28} />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-white">AI Integration</h3>
-              <p className="text-muted-foreground mb-8 flex-grow">
+              <h3 className="text-2xl font-bold mb-4 text-white">AI Integration</h3>
+              <p className="text-white/80 mb-8 flex-grow leading-relaxed text-lg">
                 Enable your business with custom AI agents, workflow automation, and internal knowledge tools.
               </p>
               <Link href="/ai-integration">
-                <MotionButton size="sm" className="w-full bg-white/10 hover:bg-white/20 text-white border-0">
+                <MotionButton className="w-full bg-white text-black hover:bg-white/90 border-0 font-semibold h-12">
                   Explore AI Solutions
                 </MotionButton>
               </Link>

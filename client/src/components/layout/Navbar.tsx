@@ -28,44 +28,56 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled ? "glass border-b border-white/5 py-4" : "bg-transparent py-6"
+        "fixed top-4 left-0 right-0 z-50 transition-all duration-300 flex justify-center",
       )}
     >
-      <div className="container mx-auto px-6 flex items-center justify-between">
+      <div className={cn(
+        "container mx-auto px-6 flex items-center justify-between transition-all duration-300 max-w-6xl rounded-full",
+        scrolled ? "glass py-3 bg-black/40 border-white/10 backdrop-blur-md shadow-lg" : "py-6 bg-transparent"
+      )}>
         <Link href="/">
-          <a className="text-2xl font-display font-bold tracking-tighter hover:opacity-80 transition-opacity">
+          <a className="text-xl font-display font-bold tracking-tighter hover:opacity-80 transition-opacity pl-2">
             Bilkul<span className="text-primary">.</span>
           </a>
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <Link key={link.name} href={link.href}>
               <a
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  location === link.href ? "text-primary" : "text-muted-foreground"
+                  "px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 relative group overflow-hidden",
+                  location === link.href ? "text-white" : "text-muted-foreground hover:text-white"
                 )}
               >
-                {link.name}
+                <span className="relative z-10">{link.name}</span>
+                {location === link.href && (
+                  <motion.div 
+                    layoutId="nav-pill"
+                    className="absolute inset-0 bg-white/10 rounded-full"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
               </a>
             </Link>
           ))}
-          <Link href="/contact">
-            <MotionButton size="sm" className="rounded-full">
-              Book a Call
-            </MotionButton>
-          </Link>
+          <div className="ml-4 pl-4 border-l border-white/10">
+            <Link href="/contact">
+              <MotionButton size="sm" className="rounded-full px-6 h-9 text-xs bg-white text-black hover:bg-white/90 border-none shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]">
+                Book a Call
+              </MotionButton>
+            </Link>
+          </div>
         </div>
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden text-foreground"
+          className="md:hidden text-foreground pr-2"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? <X /> : <Menu />}
+          {isOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
@@ -73,24 +85,25 @@ export function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass border-b border-white/5 overflow-hidden"
+            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -20 }}
+            className="absolute top-20 left-4 right-4 glass rounded-2xl border border-white/10 overflow-hidden shadow-2xl z-50 bg-black/90"
           >
-            <div className="container mx-auto px-6 py-8 flex flex-col gap-6">
+            <div className="p-6 flex flex-col gap-2">
               {navLinks.map((link) => (
                 <Link key={link.name} href={link.href}>
                   <a
-                    className="text-lg font-medium text-foreground hover:text-primary"
+                    className="text-lg font-medium text-foreground hover:text-primary p-4 rounded-xl hover:bg-white/5 transition-colors"
                     onClick={() => setIsOpen(false)}
                   >
                     {link.name}
                   </a>
                 </Link>
               ))}
+              <div className="h-px bg-white/10 my-2" />
               <Link href="/contact">
-                <MotionButton className="w-full rounded-full" onClick={() => setIsOpen(false)}>
+                <MotionButton className="w-full rounded-xl py-6" onClick={() => setIsOpen(false)}>
                   Book a Call
                 </MotionButton>
               </Link>
