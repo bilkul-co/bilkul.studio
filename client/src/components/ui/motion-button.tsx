@@ -1,7 +1,8 @@
 import * as React from "react"
-import { motion, HTMLMotionProps } from "framer-motion"
+import { motion, HTMLMotionProps, AnimationProps } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button, ButtonProps } from "./button"
+import { transitions } from "@/lib/motion"
 
 type MotionButtonProps = ButtonProps & HTMLMotionProps<"button">
 
@@ -9,14 +10,14 @@ const MotionButton = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
   ({ className, ...props }, ref) => {
     return (
       <motion.div
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.92 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        whileHover={transitions.button.hover as any}
+        whileTap={transitions.button.tap as any}
+        transition={transitions.button.transition as any}
         className="inline-block"
       >
         <Button
           ref={ref}
-          className={cn("w-full", className)}
+          className={cn("w-full relative overflow-hidden", className)}
           {...props}
         />
       </motion.div>
