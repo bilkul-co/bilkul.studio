@@ -41,19 +41,12 @@ export function Navbar() {
         <div className="px-6 md:px-8 flex items-center justify-between">
           <Link href="/">
             <a className="flex items-center gap-4 group">
-              <div className="relative w-10 h-10 md:w-12 md:h-12">
-                <img 
-                  src="/brand/logo.png" 
-                  alt="Bilkul Logo Mark" 
-                  className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(45,107,255,0.6)] group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-              {/* Using the 3D Wordmark Image */}
-              <div className="h-8 md:h-10 relative hidden sm:block">
+              {/* Only Bilkul Wordmark as requested */}
+              <div className="h-12 md:h-14 relative">
                  <img 
                     src="/brand/bilkul-wordmark.png" 
                     alt="Bilkul" 
-                    className="h-full w-auto object-contain drop-shadow-[0_0_10px_rgba(45,107,255,0.3)] brightness-125 saturate-150"
+                    className="h-full w-auto object-contain drop-shadow-[0_0_10px_rgba(45,107,255,0.3)] brightness-125 saturate-150 group-hover:scale-105 transition-transform duration-300"
                  />
               </div>
             </a>

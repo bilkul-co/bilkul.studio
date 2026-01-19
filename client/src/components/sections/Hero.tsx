@@ -5,7 +5,6 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import { ArrowRight, ShieldCheck, Zap, BarChart, Play } from "lucide-react";
 import { transitions } from "@/lib/motion";
 import { FluidBackground } from "@/components/ui/fluid-background";
-import { FloatingObjects } from "@/components/ui/floating-objects";
 import { useRef } from "react";
 
 export function Hero() {
@@ -21,24 +20,23 @@ export function Hero() {
 
   return (
     <section ref={ref} className="relative min-h-[100vh] flex items-center justify-center pt-24 overflow-hidden">
-      {/* Video Background Layer */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden mix-blend-lighten opacity-60">
+      {/* Video Background Layer - Now lighter and more integrated */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden mix-blend-screen opacity-50">
         <video 
             autoPlay 
             loop 
             muted 
             playsInline
-            className="w-full h-full object-cover scale-110 opacity-40 blur-sm"
+            className="w-full h-full object-cover scale-110 opacity-60 blur-md"
         >
             <source src="/assets/sphere-bg.mp4" type="video/mp4" />
         </video>
       </div>
 
       {/* Liquid Fluid Background */}
-      <FluidBackground className="opacity-80 mix-blend-screen" />
+      <FluidBackground className="opacity-90 mix-blend-screen" />
       
-      {/* Floating 3D Objects Layer */}
-      <FloatingObjects />
+      {/* Note: Floating Objects are now global in App.tsx */}
       
       {/* Texture Overlay */}
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none noise-bg mix-blend-overlay" />

@@ -3,6 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { FloatingObjects } from "@/components/ui/floating-objects"; // Global floating objects
 import NotFound from "@/pages/not-found";
 
 import Home from "@/pages/Home";
@@ -32,6 +33,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <FloatingObjects /> {/* Added global floating objects layer */}
         <Toaster />
         <Router />
       </TooltipProvider>
