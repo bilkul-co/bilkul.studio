@@ -1,0 +1,137 @@
+ROLE
+You are Replit Agent acting as a Senior UX Engineer + Visual Systems Designer.
+You will UPDATE the existing “Bilkul Digital Studio” Next.js site you just built.
+
+GOAL
+Make the site feel LIGHTER, more premium, less “all-black and dull”.
+Keep the calm-luxury vibe, but introduce tasteful “bubble-glass” hues and airy depth.
+
+ABSOLUTE REQUIREMENTS
+1) Add the attached Bilkul logo image (blue liquid-glass “B.”) into:
+   - Header (left side, brand mark)
+   - Footer
+   - Favicon / app icons (generate basic versions or use the image as-is)
+   - Optional: subtle watermark usage in hero background (VERY low opacity, tasteful)
+2) Keep performance excellent (no heavy videos; optimize images).
+3) Do not turn it into neon/cyberpunk. Stay premium + restrained.
+4) Increase perceived brightness: more mid-tones, soft gradients, subtle glass panels.
+
+ASSET HANDLING (LOGO)
+- The logo image is provided in the repository assets or uploaded by user.
+- Create these files:
+  /public/brand/logo.png (original)
+  /public/brand/logo-mark.png (if you need a cropped mark)
+  /public/favicon.ico (basic export)
+- Use Next/Image everywhere.
+- Add ALT text: “Bilkul Digital Studio logo”.
+
+VISUAL DIRECTION — “AURORA GLASS 2026”
+Current issue: too black + flat.
+New direction: deep navy base + luminous glass layers + soft aurora gradients.
+
+COLOR PALETTE (USE THESE TONES, RESTRAINED)
+Base:
+- Ink Navy: #060A12
+- Deep Midnight: #070B16
+- Soft Slate: #0E1626
+
+Luminous Accents (use sparingly, as gradients + edge highlights):
+- Rare Blue: #2D6BFF
+- Aquamarine: #35F5D5
+- Teal: #19C3C8
+- Turquoise: #41E2FF
+- Clean Cyan: #7AF0FF
+Bubble Hues (micro accents only):
+- Soft Pink: #FF5BD6
+- Violet Mist: #B18CFF
+
+BACKGROUND & SURFACE SYSTEM (IMPORTANT)
+- Replace flat black backgrounds with:
+  1) A subtle radial gradient in the hero
+  2) A faint aurora band (blurred) behind key sections
+  3) Glass cards with soft borders and inner glow
+
+Define tokens in:
+- /lib/theme.ts (or /lib/design-tokens.ts)
+- Tailwind CSS variables in globals.css
+
+Add CSS VARIABLES like:
+--bg-0, --bg-1
+--glass-bg
+--glass-border
+--glow-blue, --glow-aqua, --glow-pink
+
+Example background behavior (IMPLEMENT):
+- Body background:
+  linear-gradient(180deg, #060A12 0%, #070B16 60%, #060A12 100%)
+- Hero overlay:
+  radial-gradient(circle at 20% 10%, rgba(45,107,255,0.22), transparent 45%),
+  radial-gradient(circle at 80% 40%, rgba(53,245,213,0.16), transparent 50%),
+  radial-gradient(circle at 60% 90%, rgba(255,91,214,0.10), transparent 55%)
+
+CARDS / PANELS (GLASS)
+Update all major containers (service cards, case studies, FAQ, testimonials):
+- Background: rgba(255,255,255,0.04–0.07)
+- Border: 1px solid rgba(255,255,255,0.10–0.14)
+- Shadow: soft, deep, spread (no harsh outlines)
+- Add subtle “edge spectrum” gradient border on hover (blue→aqua→pink) very low intensity.
+
+BUTTONS (SQUISHY + LIGHTER)
+Primary button:
+- Gradient: Rare Blue → Teal
+- Soft glow around (opacity 0.18 max)
+- Press animation: scale 0.92–0.94, spring back
+Secondary button:
+- Glass button with faint border + hover shimmer
+
+TYPOGRAPHY (AIR + TRUST)
+- Increase line-height and spacing slightly.
+- Headlines: confident, not overly condensed.
+- Body text: slightly brighter than before (avoid pure white; use off-white).
+  Example:
+  --text-primary: rgba(255,255,255,0.92)
+  --text-secondary: rgba(255,255,255,0.70)
+
+HEADER UPDATE (WITH LOGO)
+- Left: logo mark + “Bilkul Digital Studio”
+- Make header glassy: translucent background with blur on scroll
+- Add a very subtle gradient hairline under the header (blue→aqua) at 10–14% opacity
+- Keep nav clean and minimal.
+- Add CTA button “Book a Call” (primary gradient)
+
+WHERE TO ADD COLOR (DO NOT OVERDO)
+Add color only as:
+- Section background glows (blurred)
+- Card hover edge highlights
+- Primary CTA gradient
+- Tiny accents: icons, dividers, badges
+NO large neon blocks.
+
+SECTIONS TO IMPROVE (TARGET)
+1) Hero: add aurora radial glows + optional watermark logo at 2–4% opacity.
+2) Services grid: glass cards + hover lift + edge sheen.
+3) “AI Integration” page: give it an extra credibility look—calm, clean, minimal accents.
+4) Work cards: add a subtle gradient top border + improved spacing.
+5) Contact wizard: make each step feel like a premium onboarding flow with soft gradient progress bar.
+
+ANIMATION (REFINED)
+- Add “slow reveal” section motion (stagger, low distance).
+- Hover: gentle lift (2–6px) + soft glow.
+- Respect prefers-reduced-motion.
+
+IMPLEMENTATION TASKS (DO THESE)
+1) Add logo assets to /public/brand and wire into Header + Footer + metadata icons.
+2) Introduce theme tokens (CSS vars) and refactor existing colors to use tokens.
+3) Update background system + hero glows.
+4) Update cards, buttons, dividers to match aurora-glass system.
+5) Ensure all pages remain consistent and performance stays strong.
+6) Provide a short README section: “Brand + Theme” explaining where to tweak colors.
+
+FINAL CHECKLIST
+- Site looks brighter, premium, modern (not dull black).
+- Logo appears properly in header/footer and feels integrated.
+- Accents are rare, tasteful: rare blue + aquamarine + teal + turquoise + subtle pink.
+- Smooth motion, strong readability, high trust.
+- No broken layouts; mobile polish is excellent.
+
+Proceed to implement now, end-to-end, in the existing project.

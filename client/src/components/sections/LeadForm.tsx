@@ -65,8 +65,9 @@ export function LeadForm() {
     setIsSubmitting(false);
     toast({
       title: "Inquiry Received",
-      description: "We've started a file for your project. Expect a response shortly.",
+      description: "We've started a file for your project. A summary has been sent to your email.",
     });
+    // Add success state visual if needed, currently toast handles it.
   }
 
   const nextStep = async () => {
@@ -82,11 +83,12 @@ export function LeadForm() {
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 0));
 
   return (
-    <section className="py-32 bg-background relative overflow-hidden" id="contact">
-      <div className="absolute top-1/2 right-0 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+    <section className="py-32 relative overflow-hidden" id="contact">
+      {/* Aurora Background for Section */}
+      <div className="absolute inset-0 aurora-bg opacity-20 pointer-events-none" />
       
       <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <motion.div 
             initial="initial"
             whileInView="whileInView"
@@ -94,38 +96,42 @@ export function LeadForm() {
             variants={transitions.section}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">Start Your Project</h2>
-            <p className="text-xl text-muted-foreground font-light">Tell us about your vision. We'll engineer the rest.</p>
+            <h2 className="text-4xl md:text-6xl font-display font-bold mb-6 text-white">Start Your Project</h2>
+            <p className="text-xl text-white/60 font-light max-w-2xl mx-auto">Tell us about your vision. We'll engineer the rest.</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-[280px_1fr] gap-8">
+          <div className="grid md:grid-cols-[300px_1fr] gap-12 items-start">
             {/* Steps Sidebar (Desktop) */}
-            <div className="hidden md:flex flex-col gap-6 pt-8">
+            <div className="hidden md:flex flex-col gap-8 pt-8 sticky top-32">
                 {steps.map((step, index) => (
-                    <div key={index} className="relative pl-8 group cursor-default">
-                        <div className={`absolute left-0 top-1.5 w-3 h-3 rounded-full border-2 transition-colors duration-500 z-10 ${index <= currentStep ? "bg-primary border-primary" : "bg-transparent border-white/20"}`} />
+                    <div key={index} className="relative pl-10 group cursor-default">
+                        <div className={`absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 transition-all duration-500 z-10 ${
+                            index <= currentStep 
+                                ? "bg-[var(--rare-blue)] border-[var(--rare-blue)] shadow-[0_0_10px_var(--rare-blue)]" 
+                                : "bg-transparent border-white/20"
+                        }`} />
                         {index < steps.length - 1 && (
-                            <div className={`absolute left-[5px] top-6 w-0.5 h-12 bg-white/10 transition-colors duration-500 ${index < currentStep ? "bg-primary/50" : ""}`} />
+                            <div className={`absolute left-[7px] top-6 w-0.5 h-16 bg-white/5 transition-all duration-500 ${index < currentStep ? "bg-[var(--rare-blue)]/50" : ""}`} />
                         )}
-                        <h4 className={`text-sm font-bold uppercase tracking-wider transition-colors duration-300 ${index === currentStep ? "text-white" : "text-muted-foreground"}`}>{step.title}</h4>
-                        <p className="text-xs text-muted-foreground mt-1">{step.subtitle}</p>
+                        <h4 className={`text-sm font-bold uppercase tracking-widest transition-colors duration-300 ${index === currentStep ? "text-white" : "text-white/40"}`}>{step.title}</h4>
+                        <p className="text-xs text-white/40 mt-1 font-light">{step.subtitle}</p>
                     </div>
                 ))}
             </div>
 
-            <GlassCard className="p-8 md:p-12 border-primary/20 bg-black/20" spotlight>
+            <GlassCard className="p-8 md:p-12 border-white/10 bg-white/[0.02]" spotlight>
                 {/* Mobile Progress */}
                 <div className="flex md:hidden justify-between mb-8 relative px-2">
                     <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/10 -translate-y-1/2 -z-10" />
                     <div 
-                        className="absolute top-1/2 left-0 h-0.5 bg-primary -translate-y-1/2 -z-10 transition-all duration-300" 
+                        className="absolute top-1/2 left-0 h-0.5 bg-[var(--rare-blue)] -translate-y-1/2 -z-10 transition-all duration-300" 
                         style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
                     />
                     {steps.map((step, index) => (
                         <div 
                         key={index}
                         className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-300 ${
-                            index <= currentStep ? "bg-primary text-white scale-110" : "bg-card border border-white/10 text-muted-foreground"
+                            index <= currentStep ? "bg-[var(--rare-blue)] text-white scale-110 shadow-[0_0_10px_var(--rare-blue)]" : "bg-[#060A12] border border-white/10 text-white/40"
                         }`}
                         >
                         {index + 1}
@@ -146,8 +152,8 @@ export function LeadForm() {
                         className="space-y-8"
                         >
                         <div>
-                            <h3 className="text-2xl font-bold mb-2">What are we building?</h3>
-                            <p className="text-muted-foreground">Select the core service you need.</p>
+                            <h3 className="text-3xl font-bold mb-3 text-white">What are we building?</h3>
+                            <p className="text-white/60 text-lg font-light">Select the core service you need.</p>
                         </div>
                         <FormField
                             control={form.control}
@@ -159,17 +165,17 @@ export function LeadForm() {
                                     {["Web Experience", "Client Portal", "AI Integration", "Digital Product", "Strategy", "Other"].map((type) => (
                                     <div
                                         key={type}
-                                        className={`p-6 rounded-xl border cursor-pointer transition-all duration-300 relative overflow-hidden group ${
+                                        className={`p-6 rounded-2xl border cursor-pointer transition-all duration-300 relative overflow-hidden group ${
                                         field.value === type 
-                                            ? "border-primary bg-primary/10 text-white shadow-[0_0_20px_-5px_rgba(56,189,248,0.3)]" 
+                                            ? "border-[var(--rare-blue)] bg-[var(--rare-blue)]/10 text-white shadow-[0_0_20px_-5px_rgba(45,107,255,0.2)]" 
                                             : "border-white/10 hover:border-white/20 hover:bg-white/5 bg-white/[0.02]"
                                         }`}
                                         onClick={() => field.onChange(type)}
                                     >
-                                        <div className={`absolute top-3 right-3 w-4 h-4 rounded-full border border-white/20 flex items-center justify-center transition-colors ${field.value === type ? "bg-primary border-primary" : ""}`}>
-                                            {field.value === type && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                                        <div className={`absolute top-4 right-4 w-5 h-5 rounded-full border border-white/20 flex items-center justify-center transition-colors ${field.value === type ? "bg-[var(--rare-blue)] border-[var(--rare-blue)]" : ""}`}>
+                                            {field.value === type && <div className="w-2 h-2 bg-white rounded-full" />}
                                         </div>
-                                        <span className="font-medium text-lg">{type}</span>
+                                        <span className="font-medium text-lg text-white/90">{type}</span>
                                     </div>
                                     ))}
                                 </div>
@@ -191,8 +197,8 @@ export function LeadForm() {
                         className="space-y-8"
                         >
                         <div>
-                            <h3 className="text-2xl font-bold mb-2">Business Context</h3>
-                            <p className="text-muted-foreground">Help us understand who we're designing for.</p>
+                            <h3 className="text-3xl font-bold mb-3 text-white">Business Context</h3>
+                            <p className="text-white/60 text-lg font-light">Help us understand who we're designing for.</p>
                         </div>
                         <div className="space-y-6">
                             <FormField
@@ -200,9 +206,9 @@ export function LeadForm() {
                                 name="businessName"
                                 render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Company Name</FormLabel>
+                                    <FormLabel className="text-base text-white/80">Company Name</FormLabel>
                                     <FormControl>
-                                    <Input placeholder="Acme Corp" className="h-14 bg-white/[0.03] border-white/10 focus:border-primary/50 focus:bg-white/[0.05] transition-all text-lg" {...field} />
+                                    <Input placeholder="Acme Corp" className="h-16 rounded-xl bg-white/[0.03] border-white/10 focus:border-[var(--rare-blue)] focus:bg-white/[0.05] transition-all text-lg text-white placeholder:text-white/20" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -213,9 +219,9 @@ export function LeadForm() {
                                 name="industry"
                                 render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Industry</FormLabel>
+                                    <FormLabel className="text-base text-white/80">Industry</FormLabel>
                                     <FormControl>
-                                    <Input placeholder="e.g. Real Estate, Fintech" className="h-14 bg-white/[0.03] border-white/10 focus:border-primary/50 focus:bg-white/[0.05] transition-all text-lg" {...field} />
+                                    <Input placeholder="e.g. Real Estate, Fintech" className="h-16 rounded-xl bg-white/[0.03] border-white/10 focus:border-[var(--rare-blue)] focus:bg-white/[0.05] transition-all text-lg text-white placeholder:text-white/20" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -235,15 +241,15 @@ export function LeadForm() {
                         className="space-y-8"
                         >
                         <div>
-                            <h3 className="text-2xl font-bold mb-2">Vision & Constraints</h3>
-                            <p className="text-muted-foreground">What does success look like?</p>
+                            <h3 className="text-3xl font-bold mb-3 text-white">Vision & Constraints</h3>
+                            <p className="text-white/60 text-lg font-light">What does success look like?</p>
                         </div>
                         <FormField
                             control={form.control}
                             name="goals"
                             render={() => (
                             <FormItem>
-                                <FormLabel className="text-base mb-4 block">Primary Goals</FormLabel>
+                                <FormLabel className="text-base mb-4 block text-white/80">Primary Goals</FormLabel>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {["Generate Leads", "Automate Operations", "Modernize Brand", "Launch New Product", "Improve UX", "Reduce Costs"].map((goal) => (
                                     <FormField
@@ -256,7 +262,7 @@ export function LeadForm() {
                                             key={goal}
                                             className={`flex flex-row items-center space-x-3 space-y-0 rounded-xl border p-4 transition-all cursor-pointer ${
                                                 field.value?.includes(goal) 
-                                                ? "border-primary bg-primary/10 shadow-sm" 
+                                                ? "border-[var(--rare-blue)] bg-[var(--rare-blue)]/10 shadow-sm" 
                                                 : "border-white/10 hover:bg-white/5 hover:border-white/20 bg-white/[0.02]"
                                             }`}
                                         >
@@ -272,10 +278,10 @@ export function LeadForm() {
                                                         )
                                                     )
                                                 }}
-                                                className="border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                                className="border-white/30 data-[state=checked]:bg-[var(--rare-blue)] data-[state=checked]:border-[var(--rare-blue)]"
                                             />
                                             </FormControl>
-                                            <FormLabel className="font-medium cursor-pointer w-full text-base m-0">
+                                            <FormLabel className="font-medium cursor-pointer w-full text-base m-0 text-white/90">
                                             {goal}
                                             </FormLabel>
                                         </FormItem>
@@ -293,17 +299,17 @@ export function LeadForm() {
                             name="timeline"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-base">Ideal Timeline</FormLabel>
+                                <FormLabel className="text-base text-white/80">Ideal Timeline</FormLabel>
                                 <FormControl>
                                 <select 
-                                    className="w-full h-14 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-base text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:bg-white/[0.05] transition-all appearance-none"
+                                    className="w-full h-16 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-base text-white focus:outline-none focus:ring-1 focus:ring-[var(--rare-blue)] focus:bg-white/[0.05] transition-all appearance-none"
                                     {...field}
                                 >
-                                    <option value="" disabled>Select a timeline</option>
-                                    <option value="asap">ASAP (&lt; 1 month)</option>
-                                    <option value="1-3months">1-3 Months</option>
-                                    <option value="3-6months">3-6 Months</option>
-                                    <option value="flexible">Flexible</option>
+                                    <option value="" disabled className="bg-[#060A12] text-white/50">Select a timeline</option>
+                                    <option value="asap" className="bg-[#060A12]">ASAP (&lt; 1 month)</option>
+                                    <option value="1-3months" className="bg-[#060A12]">1-3 Months</option>
+                                    <option value="3-6months" className="bg-[#060A12]">3-6 Months</option>
+                                    <option value="flexible" className="bg-[#060A12]">Flexible</option>
                                 </select>
                                 </FormControl>
                                 <FormMessage />
@@ -323,8 +329,8 @@ export function LeadForm() {
                         className="space-y-8"
                         >
                         <div>
-                            <h3 className="text-2xl font-bold mb-2">Final Step</h3>
-                            <p className="text-muted-foreground">Where should we send the proposal?</p>
+                            <h3 className="text-3xl font-bold mb-3 text-white">Final Step</h3>
+                            <p className="text-white/60 text-lg font-light">Where should we send the proposal?</p>
                         </div>
                         <div className="grid md:grid-cols-2 gap-6">
                             <FormField
@@ -332,9 +338,9 @@ export function LeadForm() {
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel className="text-base">Email Address</FormLabel>
+                                <FormLabel className="text-base text-white/80">Email Address</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="you@company.com" type="email" className="h-14 bg-white/[0.03] border-white/10 focus:border-primary/50 text-lg" {...field} />
+                                    <Input placeholder="you@company.com" type="email" className="h-16 rounded-xl bg-white/[0.03] border-white/10 focus:border-[var(--rare-blue)] focus:bg-white/[0.05] text-lg text-white placeholder:text-white/20" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -345,9 +351,9 @@ export function LeadForm() {
                             name="phone"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel className="text-base">Phone (Optional)</FormLabel>
+                                <FormLabel className="text-base text-white/80">Phone (Optional)</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="+971 50..." className="h-14 bg-white/[0.03] border-white/10 focus:border-primary/50 text-lg" {...field} />
+                                    <Input placeholder="+971 50..." className="h-16 rounded-xl bg-white/[0.03] border-white/10 focus:border-[var(--rare-blue)] focus:bg-white/[0.05] text-lg text-white placeholder:text-white/20" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -359,9 +365,9 @@ export function LeadForm() {
                             name="details"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-base">Additional Details</FormLabel>
+                                <FormLabel className="text-base text-white/80">Additional Details</FormLabel>
                                 <FormControl>
-                                <Textarea placeholder="Anything else we should know?" className="min-h-[120px] bg-white/[0.03] border-white/10 focus:border-primary/50 text-lg resize-none p-4" {...field} />
+                                <Textarea placeholder="Anything else we should know?" className="min-h-[140px] rounded-xl bg-white/[0.03] border-white/10 focus:border-[var(--rare-blue)] focus:bg-white/[0.05] text-lg text-white placeholder:text-white/20 resize-none p-6" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -371,23 +377,23 @@ export function LeadForm() {
                     )}
                     </AnimatePresence>
 
-                    <div className="flex justify-between pt-8 border-t border-white/5 mt-auto">
+                    <div className="flex justify-between pt-8 border-t border-white/10 mt-auto">
                     <Button
                         type="button"
                         variant="ghost"
                         onClick={prevStep}
                         disabled={currentStep === 0}
-                        className={`text-muted-foreground hover:text-white ${currentStep === 0 ? "invisible" : ""}`}
+                        className={`text-white/60 hover:text-white hover:bg-white/5 ${currentStep === 0 ? "invisible" : ""}`}
                     >
                         Back
                     </Button>
                     
                     {currentStep < steps.length - 1 ? (
-                        <MotionButton type="button" onClick={nextStep} className="bg-white text-black hover:bg-white/90 px-8 rounded-full font-semibold">
+                        <MotionButton type="button" onClick={nextStep} className="bg-white text-black hover:bg-white/90 px-8 rounded-full font-bold">
                         Next Step <ChevronRight className="ml-2 h-4 w-4" />
                         </MotionButton>
                     ) : (
-                        <MotionButton type="submit" disabled={isSubmitting} className="min-w-[160px] bg-primary text-white hover:bg-primary/90 rounded-full font-semibold shadow-lg shadow-primary/20">
+                        <MotionButton type="submit" disabled={isSubmitting} className="min-w-[180px] bg-gradient-to-r from-[var(--rare-blue)] to-[var(--teal)] text-white hover:opacity-90 rounded-full font-bold shadow-[0_0_20px_-5px_rgba(45,107,255,0.4)] border-0">
                         {isSubmitting ? <Loader2 className="animate-spin" /> : <>Submit Inquiry <ArrowRight className="ml-2 h-4 w-4" /></>}
                         </MotionButton>
                     )}

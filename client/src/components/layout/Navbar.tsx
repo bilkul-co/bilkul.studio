@@ -26,33 +26,42 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+    <nav className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={cn(
-          "w-full max-w-5xl rounded-full transition-all duration-300 border backdrop-blur-xl",
+          "w-full max-w-6xl rounded-full transition-all duration-300 border pointer-events-auto",
           scrolled || isOpen 
-            ? "bg-black/60 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.2)] py-3" 
+            ? "bg-[#060A12]/80 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-xl py-2" 
             : "bg-transparent border-transparent py-4"
         )}
       >
         <div className="px-6 md:px-8 flex items-center justify-between">
           <Link href="/">
-            <a className="text-xl font-display font-bold tracking-tighter hover:opacity-80 transition-opacity flex items-center gap-1">
-              Bilkul<span className="text-primary animate-pulse">.</span>
+            <a className="flex items-center gap-3 group">
+              <div className="relative w-8 h-8 md:w-10 md:h-10">
+                <img 
+                  src="/brand/logo.png" 
+                  alt="Bilkul Digital Studio" 
+                  className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(45,107,255,0.5)]"
+                />
+              </div>
+              <span className="text-xl font-display font-bold tracking-tighter text-white group-hover:opacity-90 transition-opacity">
+                Bilkul<span className="text-[var(--aquamarine)]">.</span>
+              </span>
             </a>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/5">
+          <div className="hidden md:flex items-center gap-1 bg-white/[0.03] rounded-full p-1 border border-white/[0.05]">
             {navLinks.map((link) => (
               <Link key={link.name} href={link.href}>
                 <a
                   className={cn(
-                    "px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 relative group",
-                    location === link.href ? "text-white" : "text-muted-foreground hover:text-white"
+                    "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 relative group",
+                    location === link.href ? "text-white" : "text-white/60 hover:text-white"
                   )}
                 >
                   <span className="relative z-10">{link.name}</span>
@@ -70,7 +79,7 @@ export function Navbar() {
 
           <div className="hidden md:block">
             <Link href="/contact">
-              <MotionButton size="sm" className="rounded-full px-6 h-10 text-xs font-semibold bg-white text-black hover:bg-white/90 border-none shadow-[0_0_15px_-3px_rgba(255,255,255,0.4)]">
+              <MotionButton size="sm" className="rounded-full px-8 h-10 text-xs font-bold uppercase tracking-wider">
                 Book a Call
               </MotionButton>
             </Link>
@@ -82,9 +91,12 @@ export function Navbar() {
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
+        
+        {/* Subtle Gradient Line under header */}
+        <div className="absolute bottom-0 left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-[var(--rare-blue)] to-transparent opacity-20" />
       </motion.div>
 
       {/* Mobile Nav Overlay */}
@@ -94,7 +106,7 @@ export function Navbar() {
             initial={{ opacity: 0, scale: 0.95, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
-            className="absolute top-24 left-4 right-4 glass rounded-3xl border border-white/10 overflow-hidden shadow-2xl z-40 bg-[#05050A]"
+            className="absolute top-24 left-4 right-4 glass rounded-3xl border border-white/10 overflow-hidden shadow-2xl z-40 bg-[#060A12] pointer-events-auto"
           >
             <div className="p-2 flex flex-col gap-1">
               {navLinks.map((link) => (
@@ -102,19 +114,19 @@ export function Navbar() {
                   <a
                     className={cn(
                         "text-lg font-medium p-4 rounded-2xl transition-all flex justify-between items-center",
-                        location === link.href ? "bg-white/10 text-white" : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                        location === link.href ? "bg-white/10 text-white" : "text-white/60 hover:bg-white/5 hover:text-white"
                     )}
                     onClick={() => setIsOpen(false)}
                   >
                     {link.name}
-                    {location === link.href && <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor]" />}
+                    {location === link.href && <div className="w-1.5 h-1.5 rounded-full bg-[var(--aquamarine)] shadow-[0_0_8px_currentColor]" />}
                   </a>
                 </Link>
               ))}
               <div className="h-px bg-white/5 my-2 mx-4" />
               <div className="p-2">
                 <Link href="/contact">
-                    <MotionButton className="w-full rounded-xl py-6 text-base font-semibold" onClick={() => setIsOpen(false)}>
+                    <MotionButton className="w-full rounded-xl py-4 text-base font-bold" onClick={() => setIsOpen(false)}>
                     Book a Call
                     </MotionButton>
                 </Link>

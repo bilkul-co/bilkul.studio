@@ -1,0 +1,132 @@
+ADD-ON: MAKE THE WEBSITE FULLY FUNCTIONAL (PRODUCTION-READY)
+
+You will extend the existing Bilkul Digital Studio site so it is not just a pretty UI, but a complete working system for lead generation + operations.
+
+FUNCTIONAL REQUIREMENTS (MUST IMPLEMENT)
+
+1) CONTACT / LEAD SYSTEM (END-TO-END)
+- The multi-step inquiry wizard must:
+  - Validate on both client + server (Zod shared schema)
+  - Create a Lead record in the database
+  - Send an email notification to OWNER_EMAIL with a clean formatted summary
+  - Show a premium success state + next steps
+- Add basic spam prevention:
+  - Honeypot hidden field
+  - Rate limit by IP (Upstash Redis if available; otherwise in-memory fallback)
+  - Block repeated submissions within a short window
+
+2) CRM-LITE ADMIN PANEL (REAL OPERATIONS)
+Create a usable admin panel (no placeholders):
+Route: /admin
+Auth: simple password gate using ADMIN_PASSWORD env var (session cookie)
+Admin features:
+- Leads table: search, filter by status, sort by newest
+- Lead detail drawer/page
+- Status update: NEW → CONTACTED → QUALIFIED → CLOSED
+- Add notes field (append-only log or editable notes)
+- Export CSV of filtered leads
+- Add “Mark as spam” status
+
+3) CALENDAR / SCHEDULING (HIGH CONVERSION)
+Add “Book a Call” functionality:
+- Option A (fast): Integrate Calendly link via env var CALENDLY_URL and a modal embed
+- Option B (better): Build a mini booking request form with preferred date/time and timezone
+Either way:
+- After booking / request, store record in DB and email owner
+
+4) EMAIL SYSTEM (RELIABLE)
+Implement Resend (preferred) or Nodemailer (SMTP) as a service:
+- /server/email.ts with a single sendEmail() function
+- Professional email template (HTML) with:
+  - Lead summary table
+  - CTA buttons: “Open Lead in Admin”
+  - Reply-to set to user’s email
+
+ENV VARS:
+- OWNER_EMAIL
+- RESEND_API_KEY (or SMTP creds)
+- SITE_URL
+
+5) SEO + TRUST BASELINE (LIVE-READY)
+- Proper metadata on every page (title, description, OG image)
+- Generate sitemap.xml and robots.txt (dynamic is fine)
+- Add structured data (JSON-LD):
+  - Organization schema
+  - LocalBusiness/ProfessionalService schema (generic, no fake address)
+- Add a “Privacy” page (/privacy) and “Terms” page (/terms) (simple, professional)
+
+6) ANALYTICS (BUSINESS INSIGHT)
+Add analytics in a privacy-respecting way:
+- Option A: Plausible (if keys exist) via env var PLAUSIBLE_DOMAIN
+- Option B: PostHog (if keys exist) via env var POSTHOG_KEY + HOST
+Track events:
+- CTA click (Book a Call)
+- Lead form started
+- Lead form submitted
+- Service page view depth (optional)
+Ensure no sensitive data is tracked.
+
+7) CMS-LIKE CONTENT MANAGEMENT (MINIMAL BUT REAL)
+So you can update content without touching code:
+- Case studies: editable in DB (Prisma) + admin CRUD (create/edit/publish)
+- Testimonials: stored in DB + admin CRUD
+- FAQs: stored in DB + admin CRUD
+Keep the UI clean. Don’t overbuild—just enough to manage core content.
+
+8) PRODUCTION QUALITY GUARDRAILS
+- Add error handling + user-friendly toast notifications
+- Add loading states and optimistic UI for admin updates
+- Ensure mobile works perfectly
+- Add a health check route: /api/health
+- Add basic logging for lead submissions (no leaking secrets)
+
+DATABASE UPDATES (PRISMA)
+Add/extend models:
+
+Lead:
+- id, createdAt
+- serviceType, businessName, industry
+- goals, timeline, budgetRange (optional field, nullable for future)
+- contactName, email, phone, preferredContact
+- message
+- status (NEW/CONTACTED/QUALIFIED/CLOSED/SPAM)
+- notes (string nullable)
+- source (string nullable: “website”, “referral”)
+- ipHash (string nullable)
+
+CaseStudy:
+- id, slug, title, category, summary
+- content (rich text as markdown string)
+- results (string[])
+- tags (string[])
+- coverImage
+- published (boolean)
+- createdAt, updatedAt
+
+Testimonial:
+- id, name, role, company
+- quote
+- published (boolean)
+
+FAQ:
+- id, question, answer
+- order (int)
+- published (boolean)
+
+AdminSession (if needed):
+- id
+- createdAt
+- expiresAt
+
+FINAL DELIVERABLES
+- Everything above working in the running Replit deployment
+- README updated with:
+  - Setup steps
+  - Env vars list
+  - How to log into /admin
+  - How to manage case studies/testimonials/FAQs
+- No TODOs for core functionality
+
+EXECUTION INSTRUCTION
+Implement this add-on fully and safely on top of the current codebase.
+Prioritize reliability, security basics, and conversion UX.
