@@ -7,25 +7,32 @@ import { transitions } from "@/lib/motion";
 
 const projects = [
   {
-    title: "Dubai Future Foundation",
-    category: "System Design",
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
-    tags: ["Portal", "Next.js", "Design System"],
-    summary: "A unified digital gateway for Dubai's innovation ecosystem."
+    title: "Modern SaaS Dashboard",
+    category: "Product Design",
+    image: "/assets/framer/work-1.png",
+    tags: ["UI/UX", "SaaS", "Dashboard"],
+    summary: "A clean, data-rich interface for modern analytics platforms."
   },
   {
-    title: "Emaar Lifestyle App",
-    category: "Mobile Experience",
-    image: "https://images.unsplash.com/photo-1512453979798-5ea904ac6605?q=80&w=2070&auto=format&fit=crop",
-    tags: ["App", "React Native", "UX Strategy"],
-    summary: "Reimagining luxury living through a seamless mobile concierge."
+    title: "E-Commerce Experience",
+    category: "Web Design",
+    image: "/assets/framer/work-2.png",
+    tags: ["E-Commerce", "Branding", "Conversion"],
+    summary: "High-conversion product pages with immersive storytelling."
   },
   {
-    title: "Abu Dhabi Finance AI",
-    category: "Fintech Integration",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
-    tags: ["AI", "Dashboard", "Data Viz"],
-    summary: "Real-time predictive analytics for institutional investors."
+    title: "Fintech Mobile App",
+    category: "App Design",
+    image: "/assets/framer/work-3.png",
+    tags: ["Mobile", "Fintech", "iOS"],
+    summary: "Secure and intuitive mobile banking experience."
+  },
+  {
+    title: "Corporate Identity",
+    category: "Branding",
+    image: "/assets/framer/work-4.png",
+    tags: ["Identity", "Strategy", "Web"],
+    summary: "Rebranding a legacy enterprise for the digital age."
   }
 ];
 
@@ -41,12 +48,14 @@ export function FeaturedWork() {
            className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6"
         >
           <div>
-            <span className="text-primary font-mono text-xs tracking-[0.2em] uppercase mb-4 block">Case Studies</span>
-            <h2 className="text-5xl md:text-7xl font-display font-bold mb-4 tracking-tight">Selected Work</h2>
-            <p className="text-muted-foreground text-xl max-w-xl font-light">Digital systems engineered for impact in the MENA region.</p>
+            <span className="text-[var(--aquamarine)] font-mono text-xs tracking-[0.2em] uppercase mb-4 block">Selected Work</span>
+            <h2 className="text-5xl md:text-7xl font-display font-bold mb-4 tracking-tight text-white">Our Portfolio</h2>
+            <p className="text-white/60 text-xl max-w-xl font-light">
+              Award-winning designs that drive real business results.
+            </p>
           </div>
           <Link href="/work">
-            <MotionButton variant="outline" className="hidden md:flex rounded-full px-8 border-white/10 hover:bg-white/5">
+            <MotionButton variant="outline" className="hidden md:flex rounded-full px-8 border-white/10 hover:bg-white/5 text-white">
               View All Projects
             </MotionButton>
           </Link>
@@ -57,7 +66,7 @@ export function FeaturedWork() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid md:grid-cols-2 gap-8"
         >
           {projects.map((project, index) => (
             <motion.div key={index} variants={transitions.stagger.item as any}>
@@ -65,38 +74,36 @@ export function FeaturedWork() {
                 hoverEffect 
                 spotlight
                 noPadding
-                className="group cursor-pointer h-[550px] flex flex-col border-white/5 bg-white/[0.02]"
+                className="group cursor-pointer h-[500px] flex flex-col border-white/5 bg-white/[0.02] overflow-hidden"
                 >
-                <div className="relative h-2/3 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent z-10 opacity-80" />
+                <div className="relative h-full overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent z-10 opacity-60 transition-opacity group-hover:opacity-40" />
                     <motion.img 
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.7, ease: "easeOut" }}
                     src={project.image} 
                     alt={project.title} 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top"
                     />
                     <div className="absolute top-6 left-6 z-20">
                         <span className="bg-black/40 backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono uppercase tracking-wider border border-white/10 text-white">
                             {project.category}
                         </span>
                     </div>
-                </div>
-                
-                <div className="p-8 flex flex-col flex-grow justify-between bg-white/[0.01] border-t border-white/5 relative z-20">
-                    <div>
-                    <h3 className="text-2xl font-bold mb-3 flex items-center gap-2 text-white group-hover:text-primary transition-colors">
-                        {project.title}
-                        <ArrowUpRight size={24} className="opacity-0 -translate-y-2 translate-x-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300 text-primary" />
-                    </h3>
-                    <p className="text-muted-foreground mb-6 line-clamp-2">{project.summary}</p>
-                    <div className="flex gap-2 flex-wrap">
-                        {project.tags.map(tag => (
-                        <span key={tag} className="text-xs text-muted-foreground bg-white/5 px-3 py-1.5 rounded-full border border-white/5 group-hover:border-white/20 transition-colors">
-                            {tag}
-                        </span>
-                        ))}
-                    </div>
+                    
+                    <div className="absolute bottom-0 left-0 right-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <h3 className="text-3xl font-bold mb-2 flex items-center gap-2 text-white group-hover:text-[var(--aquamarine)] transition-colors">
+                            {project.title}
+                            <ArrowUpRight size={24} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-[var(--aquamarine)]" />
+                        </h3>
+                        <p className="text-white/70 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">{project.summary}</p>
+                        <div className="flex gap-2 flex-wrap opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
+                            {project.tags.map(tag => (
+                            <span key={tag} className="text-xs text-white/60 bg-white/10 px-3 py-1.5 rounded-full border border-white/5">
+                                {tag}
+                            </span>
+                            ))}
+                        </div>
                     </div>
                 </div>
                 </GlassCard>
@@ -106,7 +113,7 @@ export function FeaturedWork() {
         
         <div className="mt-12 md:hidden">
           <Link href="/work">
-            <MotionButton variant="outline" className="w-full rounded-full h-12">
+            <MotionButton variant="outline" className="w-full rounded-full h-12 text-white border-white/10">
               View All Projects
             </MotionButton>
           </Link>
