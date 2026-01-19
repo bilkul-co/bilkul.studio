@@ -20,7 +20,7 @@ export function Navbar() {
 
   const navLinks = [
     { name: "Services", href: "/services" },
-    { name: "Pricing", href: "/pricing" }, // Updated to match Framer site usually
+    { name: "Pricing", href: "/pricing" }, 
     { name: "Work", href: "/work" },
     { name: "About", href: "/about" },
   ];
@@ -39,8 +39,7 @@ export function Navbar() {
         )}
       >
         <div className="px-4 flex items-center justify-between">
-          <Link href="/">
-            <a className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2 group">
               <div className="relative w-8 h-8">
                 <img 
                   src="/brand/logo.png" 
@@ -54,28 +53,27 @@ export function Navbar() {
               )}>
                 Bilkul<span className="text-[var(--rare-blue)]">.</span>
               </span>
-            </a>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
-              <Link key={link.name} href={link.href}>
-                <a
-                  className={cn(
-                    "px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:bg-slate-100",
-                    location === link.href ? "text-slate-900 bg-slate-100" : "text-slate-600"
-                  )}
-                >
-                  {link.name}
-                </a>
+              <Link 
+                key={link.name} 
+                href={link.href}
+                className={cn(
+                  "px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:bg-slate-100",
+                  location === link.href ? "text-slate-900 bg-slate-100" : "text-slate-600"
+                )}
+              >
+                {link.name}
               </Link>
             ))}
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-             <Link href="/login">
-                <a className="text-sm font-medium text-slate-600 hover:text-slate-900 px-3">Log in</a>
+             <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 px-3">
+                Log in
              </Link>
              <Link href="/contact">
               <MotionButton size="sm" className="rounded-full px-6 h-10 text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20 border-0">
@@ -106,16 +104,16 @@ export function Navbar() {
           >
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
-                <Link key={link.name} href={link.href}>
-                  <a
-                    className={cn(
-                        "text-lg font-medium p-4 rounded-xl transition-all flex justify-between items-center",
-                        location === link.href ? "bg-slate-50 text-slate-900" : "text-slate-600 hover:bg-slate-50"
-                    )}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.name}
-                  </a>
+                <Link 
+                  key={link.name} 
+                  href={link.href}
+                  className={cn(
+                      "text-lg font-medium p-4 rounded-xl transition-all flex justify-between items-center",
+                      location === link.href ? "bg-slate-50 text-slate-900" : "text-slate-600 hover:bg-slate-50"
+                  )}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.name}
                 </Link>
               ))}
               <div className="h-px bg-slate-100 my-2" />

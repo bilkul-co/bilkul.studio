@@ -1,8 +1,3 @@
-import { MotionButton } from "@/components/ui/motion-button";
-import { Link } from "wouter";
-import { motion } from "framer-motion";
-import { BackgroundBeams } from "@/components/ui/background-beams";
-import { transitions } from "@/lib/motion";
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Button, ButtonProps } from "./button"
