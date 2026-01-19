@@ -9,10 +9,11 @@ interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   hoverEffect?: boolean;
   spotlight?: boolean;
   noPadding?: boolean;
+  colored?: boolean; // New prop for intense color mode
 }
 
 export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
-  ({ children, className, hoverEffect = false, spotlight = true, noPadding = false, ...props }, ref) => {
+  ({ children, className, hoverEffect = false, spotlight = true, noPadding = false, colored = false, ...props }, ref) => {
     const divRef = useRef<HTMLDivElement>(null);
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -36,7 +37,8 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
         variants={transitions.card}
         className={cn(
           "glass-card relative overflow-hidden rounded-2xl transition-all duration-500 group",
-          hoverEffect && "hover:translate-y-[-4px] hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] hover-glow-border",
+          hoverEffect && "hover:translate-y-[-4px] hover:shadow-[0_20px_40px_-15px_rgba(45,107,255,0.3)] hover-glow-border", // Blue shadow
+          colored && "border-[var(--rare-blue)]/20 bg-[var(--rare-blue)]/5 hover:bg-[var(--rare-blue)]/10", // Colored variant
           !noPadding && "p-8",
           className
         )}
@@ -49,7 +51,7 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
               background: useMotionTemplate`
                 radial-gradient(
                   650px circle at ${mouseX}px ${mouseY}px,
-                  rgba(255, 255, 255, 0.1),
+                  rgba(255, 255, 255, 0.15),
                   transparent 80%
                 )
               `,
@@ -57,8 +59,8 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
           />
         )}
         
-        {/* Holographic Border on Hover */}
-        <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-white/10 to-transparent opacity-50 group-hover:opacity-100 transition-opacity z-20 pointer-events-none" />
+        {/* Holographic Border on Hover - Colorful */}
+        <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-[var(--aquamarine)]/30 to-[var(--soft-pink)]/30 opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none mix-blend-screen" />
 
         {/* Inner subtle noise texture for tactile feel */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0 mix-blend-overlay" 
