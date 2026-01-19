@@ -1,80 +1,82 @@
-import { Link } from "wouter";
-import { GlassCard } from "@/components/ui/glass-card";
 import { MotionButton } from "@/components/ui/motion-button";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { Link } from "wouter";
+import { motion } from "framer-motion";
+import { Spotlight } from "@/components/ui/spotlight";
+import { BackgroundBeams } from "@/components/ui/background-beams";
+import { ArrowRight, ShieldCheck, Zap, BarChart } from "lucide-react";
+import { transitions } from "@/lib/motion";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-20 overflow-hidden bg-white">
-      {/* Clean Grid Background */}
-      <div className="absolute inset-0 grid-bg opacity-60 pointer-events-none" />
+    <section className="relative min-h-[95vh] flex items-center justify-center pt-24 overflow-hidden">
+      {/* Aurora Gradient Background */}
+      <div className="absolute inset-0 aurora-bg opacity-40 pointer-events-none" />
       
-      <div className="container mx-auto px-6 relative z-20">
-        <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+      {/* Texture Overlay */}
+      <div className="absolute inset-0 z-0 opacity-30 pointer-events-none noise-bg mix-blend-overlay" />
+      <div className="absolute inset-0 grid-bg opacity-10 pointer-events-none mask-gradient-b" />
+      
+      <BackgroundBeams className="opacity-40" />
+      
+      {/* Watermark Logo (Very subtle) */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] opacity-[0.02] pointer-events-none z-0">
+         <img src="/brand/logo.png" className="w-full h-full object-contain" alt="" />
+      </div>
+
+      <div className="container mx-auto px-6 relative z-20 text-center">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={transitions.page}
+          >
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/[0.05] border border-white/[0.08] text-sm font-medium text-white/80 mb-10 backdrop-blur-md shadow-2xl hover:bg-white/[0.08] transition-colors"
+            >
+              <span className="w-2 h-2 rounded-full bg-[var(--aquamarine)] animate-pulse shadow-[0_0_10px_var(--aquamarine)]" />
+              <span className="text-xs uppercase tracking-[0.2em] font-mono">Systems Studio • UAE</span>
+            </motion.div>
             
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 border border-slate-200 text-sm font-medium text-slate-600 mb-8">
-               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-               <span className="text-xs uppercase tracking-wider font-bold">Accepting New Clients</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight leading-[1.05] mb-8 text-slate-900">
-              Intelligent Automation <br />
-              <span className="text-slate-400">for Modern Business.</span>
+            <h1 className="text-6xl md:text-7xl lg:text-9xl font-display font-bold tracking-tighter leading-[0.9] mb-8 text-white drop-shadow-lg">
+              Systems for the <br />
+              <span className="text-gradient-primary">Next Generation.</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-slate-500 max-w-2xl mb-12 leading-relaxed font-normal">
-              Bilkul brings AI automation to your fingertips. We replace unreliable freelancers and expensive agencies for one flat monthly fee.
+            <p className="text-xl md:text-2xl text-white/60 max-w-3xl mx-auto mb-14 leading-relaxed font-light">
+              We engineer premium digital ecosystems, portals, and AI workflows. 
+              <br className="hidden md:block"/> Not just websites—we architect trust.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 mb-16 w-full justify-center">
-               <Link href="/contact">
-                <MotionButton size="lg" className="h-14 px-10 text-base rounded-full font-bold bg-slate-900 text-white hover:bg-slate-800 shadow-xl shadow-slate-900/10 border-0 min-w-[180px]">
-                  Book a Call
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-20">
+              <Link href="/contact">
+                <MotionButton size="lg" className="h-16 px-12 text-lg rounded-full font-bold shadow-[0_0_40px_-10px_rgba(45,107,255,0.4)]">
+                  Start Your Project
                 </MotionButton>
-               </Link>
-               <Link href="/pricing">
-                <MotionButton variant="outline" size="lg" className="h-14 px-10 text-base rounded-full border-slate-200 bg-white hover:bg-slate-50 text-slate-900 font-bold min-w-[180px]">
-                  View Pricing
+              </Link>
+              <Link href="/services">
+                <MotionButton variant="outline" size="lg" className="h-16 px-12 text-lg rounded-full border-white/10 hover:bg-white/5 backdrop-blur-md font-medium text-white">
+                  View Services
                 </MotionButton>
-               </Link>
+              </Link>
             </div>
 
-            {/* Visual Proof / Bento Grid Preview */}
-            <div className="w-full relative mt-8">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[500px] bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 blur-[100px] -z-10 opacity-60 rounded-full" />
-                
-                <GlassCard className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-2xl shadow-slate-200/50 p-2 rounded-3xl overflow-hidden" noPadding>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                        <div className="md:col-span-2 relative aspect-[16/10] overflow-hidden rounded-2xl bg-slate-100 group">
-                             <img src="/assets/framer/work-1.png" className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" alt="Dashboard" />
-                             <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-2 rounded-xl text-sm font-bold shadow-sm">
-                                Automation Dashboard
-                             </div>
-                        </div>
-                        <div className="hidden md:flex flex-col gap-2">
-                            <div className="flex-1 relative overflow-hidden rounded-2xl bg-blue-50 group">
-                                <img src="/assets/framer/work-3.png" className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" alt="Mobile App" />
-                            </div>
-                            <div className="h-[120px] bg-slate-900 rounded-2xl p-6 flex flex-col justify-center text-white">
-                                <div className="text-3xl font-bold mb-1">48h</div>
-                                <div className="text-slate-400 text-sm">Average Delivery</div>
-                            </div>
-                        </div>
-                    </div>
-                </GlassCard>
+            {/* Proof Layer */}
+            <div className="flex flex-wrap justify-center gap-8 md:gap-16 border-t border-white/[0.05] pt-10">
+               {[
+                 { icon: ShieldCheck, text: "Security-First" },
+                 { icon: Zap, text: "High Performance" },
+                 { icon: BarChart, text: "Data-Driven" }
+               ].map((item, i) => (
+                 <div key={i} className="flex items-center gap-3 text-sm font-mono uppercase tracking-wider text-white/40">
+                    <item.icon size={16} className="text-[var(--rare-blue)]" />
+                    {item.text}
+                 </div>
+               ))}
             </div>
-            
-            {/* Social Proof Strip */}
-            <div className="mt-20 pt-10 border-t border-slate-100 w-full">
-                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Trusted by Forward Thinkers</p>
-                <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-                    {/* Placeholder logos - purely for layout */}
-                    <div className="h-8 w-32 bg-slate-200 rounded animate-pulse" />
-                    <div className="h-8 w-32 bg-slate-200 rounded animate-pulse" />
-                    <div className="h-8 w-32 bg-slate-200 rounded animate-pulse" />
-                    <div className="h-8 w-32 bg-slate-200 rounded animate-pulse" />
-                </div>
-            </div>
+          </motion.div>
         </div>
       </div>
     </section>
