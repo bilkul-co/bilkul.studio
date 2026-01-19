@@ -40,17 +40,22 @@ export function Navbar() {
       >
         <div className="px-6 md:px-8 flex items-center justify-between">
           <Link href="/">
-            <a className="flex items-center gap-3 group">
-              <div className="relative w-8 h-8 md:w-10 md:h-10">
+            <a className="flex items-center gap-4 group">
+              <div className="relative w-10 h-10 md:w-12 md:h-12">
                 <img 
                   src="/brand/logo.png" 
-                  alt="Bilkul Digital Studio" 
-                  className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(45,107,255,0.5)]"
+                  alt="Bilkul Logo Mark" 
+                  className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(45,107,255,0.6)] group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
-              <span className="text-xl font-display font-bold tracking-tighter text-white group-hover:opacity-90 transition-opacity">
-                Bilkul<span className="text-[var(--aquamarine)]">.</span>
-              </span>
+              {/* Using the 3D Wordmark Image */}
+              <div className="h-8 md:h-10 relative hidden sm:block">
+                 <img 
+                    src="/brand/bilkul-wordmark.png" 
+                    alt="Bilkul" 
+                    className="h-full w-auto object-contain drop-shadow-[0_0_10px_rgba(45,107,255,0.3)] brightness-125 saturate-150"
+                 />
+              </div>
             </a>
           </Link>
 
@@ -79,7 +84,7 @@ export function Navbar() {
 
           <div className="hidden md:block">
             <Link href="/contact">
-              <MotionButton size="sm" className="rounded-full px-8 h-10 text-xs font-bold uppercase tracking-wider">
+              <MotionButton size="sm" className="rounded-full px-8 h-10 text-xs font-bold uppercase tracking-wider bg-white text-black hover:bg-white/90 shadow-[0_0_20px_-5px_rgba(255,255,255,0.5)]">
                 Book a Call
               </MotionButton>
             </Link>
@@ -96,7 +101,7 @@ export function Navbar() {
         </div>
         
         {/* Subtle Gradient Line under header */}
-        <div className="absolute bottom-0 left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-[var(--rare-blue)] to-transparent opacity-20" />
+        <div className="absolute bottom-0 left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-[var(--rare-blue)] to-transparent opacity-30" />
       </motion.div>
 
       {/* Mobile Nav Overlay */}
