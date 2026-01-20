@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { TrustBar } from "@/components/sections/TrustBar";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
+import { DemoTeaser } from "@/components/sections/DemoTeaser";
 import { ProcessTimeline } from "@/components/sections/ProcessTimeline";
 import { FeaturedWork } from "@/components/sections/FeaturedWork";
 import { FAQ } from "@/components/sections/FAQ";
@@ -15,6 +16,7 @@ export default function Home() {
       <main>
         <Hero />
         <TrustBar />
+        <DemoTeaser />
         <ServicesGrid />
         <ProcessTimeline />
         <FeaturedWork />

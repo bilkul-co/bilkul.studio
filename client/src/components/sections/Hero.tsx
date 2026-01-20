@@ -136,9 +136,9 @@ export function Hero() {
               transition={{ delay: 0.7, duration: 0.8 }}
               className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-24 relative z-20"
             >
-              <Link href="/contact">
+              <Link href="/demo">
                 <MotionButton size="lg" className="h-16 px-12 text-lg rounded-full font-bold shadow-[0_0_50px_-10px_rgba(45,107,255,0.3)] hover:shadow-[0_0_80px_-10px_rgba(45,107,255,0.5)] transition-shadow duration-500 bg-white text-black hover:bg-white/90">
-                  <span className="relative z-10">Start Your Project</span>
+                  <span className="relative z-10">Start Project</span>
                 </MotionButton>
               </Link>
               <Link href="/services">
