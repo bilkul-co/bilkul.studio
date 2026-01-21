@@ -121,6 +121,24 @@ export function Hero() {
               </Link>
             </motion.div>
 
+            {/* System Status Widget - New Addition */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5, duration: 1 }}
+                className="absolute bottom-8 right-8 hidden md:flex flex-col items-end gap-2 font-mono text-[10px] text-white/30 uppercase tracking-widest pointer-events-none z-30 mix-blend-plus-lighter"
+            >
+                <div className="flex items-center gap-2">
+                    <span>System Status</span>
+                    <span className="w-1.5 h-1.5 bg-[var(--aquamarine)] rounded-full animate-pulse shadow-[0_0_5px_var(--aquamarine)]"></span>
+                    <span>Operational</span>
+                </div>
+                <div className="flex items-center gap-4">
+                     <span>Latency: 12ms</span>
+                     <span>Region: UAE-North</span>
+                </div>
+            </motion.div>
+
             {/* Proof Layer */}
             <div className="flex flex-wrap justify-center gap-8 md:gap-16 border-t border-white/[0.05] pt-10 relative z-10">
                {[

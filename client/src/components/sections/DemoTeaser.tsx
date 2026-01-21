@@ -63,24 +63,38 @@ export function DemoTeaser() {
                          transition={{ duration: 0.8 }}
                     >
                         <HolographicCard className="p-1 rounded-2xl bg-gradient-to-br from-white/10 to-transparent">
-                            <div className="bg-[#050510] rounded-xl overflow-hidden relative aspect-video group cursor-pointer">
+                            <div className="bg-[#050510] rounded-xl overflow-hidden relative aspect-video group cursor-pointer border border-white/5">
+                                {/* Grid Background */}
+                                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px]" />
+                                
                                 <div className="absolute inset-0 bg-gradient-to-tr from-[var(--rare-blue)]/20 to-[var(--aquamarine)]/10 z-0" />
                                 
-                                {/* Mock UI Interface */}
-                                <div className="absolute top-4 left-4 right-4 h-8 bg-white/5 rounded-full flex items-center px-4 border border-white/5">
-                                    <div className="flex gap-1.5">
-                                        <div className="w-2 h-2 rounded-full bg-red-500/50" />
-                                        <div className="w-2 h-2 rounded-full bg-yellow-500/50" />
-                                        <div className="w-2 h-2 rounded-full bg-green-500/50" />
+                                {/* Mock UI Interface - Technical Header */}
+                                <div className="absolute top-0 left-0 right-0 h-10 bg-white/5 flex items-center px-4 border-b border-white/5 justify-between">
+                                    <div className="flex gap-2">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+                                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
+                                    </div>
+                                    <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">
+                                        bilkul-engine-v3.0.1
                                     </div>
                                 </div>
                                 
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="text-center p-8">
-                                        <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4 backdrop-blur-md border border-white/20 group-hover:scale-110 transition-transform duration-500">
-                                            <Wand2 size={32} className="text-[var(--aquamarine)]" />
+                                <div className="absolute inset-0 flex items-center justify-center mt-10">
+                                    <div className="text-center p-8 relative">
+                                        <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6 backdrop-blur-md border border-white/10 group-hover:border-[var(--aquamarine)]/50 transition-colors duration-500 relative">
+                                            <div className="absolute inset-0 rounded-full border border-t-[var(--aquamarine)] border-r-transparent border-b-transparent border-l-transparent animate-spin opacity-50" />
+                                            <Wand2 size={32} className="text-[var(--aquamarine)] drop-shadow-[0_0_10px_var(--aquamarine)]" />
                                         </div>
-                                        <h3 className="text-lg font-mono text-white/60 uppercase tracking-widest">Generating Blueprint...</h3>
+                                        <h3 className="text-sm font-mono text-[var(--aquamarine)] uppercase tracking-widest mb-2 animate-pulse">Initializing...</h3>
+                                        
+                                        {/* Fake Code Lines */}
+                                        <div className="text-[10px] font-mono text-left text-white/40 space-y-1 w-48 mx-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div className="flex justify-between"><span>{'>'} load_modules</span><span className="text-green-500">OK</span></div>
+                                            <div className="flex justify-between"><span>{'>'} parse_intent</span><span className="text-green-500">OK</span></div>
+                                            <div className="flex justify-between"><span>{'>'} generate_ui</span><span className="text-yellow-500">Processing...</span></div>
+                                        </div>
                                     </div>
                                 </div>
                                 
