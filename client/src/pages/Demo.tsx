@@ -43,9 +43,29 @@ export default function DemoWizard() {
 
     try {
       const blueprint = await generatePageBlueprint(prompt, vibe);
-      queryClient.setQueryData(["demo-blueprint"], blueprint);
-      // Save to local storage for persistence across reloads (mock DB)
-      localStorage.setItem("latest-demo-blueprint", JSON.stringify(blueprint));
+      
+      const response = await fetch("/api/demo-blueprints", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: blueprint.id,
+          brandName: blueprint.brandName,
+          tagline: blueprint.tagline,
+          tone: blueprint.tone,
+          primaryColor: blueprint.primaryColor,
+          sections: blueprint.sections,
+          promptAnchors: blueprint.promptAnchors,
+          coverageScore: blueprint.coverageScore?.toString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save blueprint");
+      }
+
+      const savedBlueprint = await response.json();
+      queryClient.setQueryData(["demo-blueprint"], savedBlueprint);
+      localStorage.setItem("latest-demo-blueprint", JSON.stringify(savedBlueprint));
       
       setTimeout(() => {
         setLocation("/demo/preview");

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { useToast } from "@/hooks/use-toast";
 import { MotionButton } from "@/components/ui/motion-button";
@@ -6,12 +6,37 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Loader2, Search, Filter, Download, User, ArrowUpRight, CheckCircle2, Clock, ShieldAlert, FileText, Settings, Database } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { transitions } from "@/lib/motion";
+import { useQuery } from "@tanstack/react-query";
+
+interface Lead {
+  id: string;
+  serviceType: string;
+  businessName: string;
+  industry: string | null;
+  goals: string[];
+  timeline: string;
+  email: string;
+  phone: string | null;
+  details: string | null;
+  status: string;
+  createdAt: string;
+}
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("leads"); // leads, content, settings
+  const [activeTab, setActiveTab] = useState("leads");
+  
+  const { data: leads = [], isLoading } = useQuery<Lead[]>({
+    queryKey: ["leads"],
+    queryFn: async () => {
+      const response = await fetch("/api/leads");
+      if (!response.ok) throw new Error("Failed to fetch leads");
+      return response.json();
+    },
+    enabled: isAuthenticated,
+  });
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,17 +131,16 @@ export default function Admin() {
                     {/* Stats Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
                         {[
-                            { label: "Total Leads", value: "124", change: "+12%", color: "text-white" },
-                            { label: "New Inquiries", value: "12", change: "+4", color: "text-[var(--aquamarine)]" },
-                            { label: "Pipeline Value", value: "$450k", change: "+8%", color: "text-white" },
-                            { label: "Conversion", value: "8.4%", change: "+1.2%", color: "text-white" }
+                            { label: "Total Leads", value: leads.length.toString(), change: "", color: "text-white" },
+                            { label: "New Inquiries", value: leads.filter(l => l.status === "new").length.toString(), change: "", color: "text-[var(--aquamarine)]" },
+                            { label: "Contacted", value: leads.filter(l => l.status === "contacted").length.toString(), change: "", color: "text-white" },
+                            { label: "Reviewing", value: leads.filter(l => l.status === "reviewing").length.toString(), change: "", color: "text-white" }
                         ].map((stat, i) => (
                             <GlassCard key={i} className="p-6 border-white/5 bg-white/[0.02]" noPadding>
                                 <div className="p-6">
                                     <p className="text-xs text-white/40 mb-2 font-mono uppercase tracking-wider">{stat.label}</p>
                                     <div className="flex items-end justify-between">
                                         <h3 className={`text-3xl font-bold font-display ${stat.color}`}>{stat.value}</h3>
-                                        <span className="text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-full border border-green-500/20">{stat.change}</span>
                                     </div>
                                 </div>
                             </GlassCard>
@@ -142,63 +166,71 @@ export default function Admin() {
 
                     <GlassCard className="overflow-hidden p-0 border-white/10 bg-black/40 backdrop-blur-xl">
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead>
-                            <tr className="border-b border-white/10 text-white/40 text-xs uppercase tracking-wider bg-white/[0.02]">
-                                <th className="p-6 font-medium">Status</th>
-                                <th className="p-6 font-medium">Company</th>
-                                <th className="p-6 font-medium">Contact</th>
-                                <th className="p-6 font-medium">Source</th>
-                                <th className="p-6 font-medium">Timeline</th>
-                                <th className="p-6 font-medium text-right">Action</th>
-                            </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5">
-                            {[1, 2, 3, 4, 5].map((i) => (
-                                <motion.tr 
-                                    key={i} 
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.05 }}
-                                    className="hover:bg-white/[0.04] transition-colors group cursor-pointer"
-                                >
-                                <td className="p-6">
-                                    <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${
-                                        i === 1 ? "bg-[var(--rare-blue)]/10 text-[var(--rare-blue)] border-[var(--rare-blue)]/20 shadow-[0_0_15px_-5px_var(--rare-blue)]" : 
-                                        i === 2 ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
-                                        "bg-white/5 text-white/40 border-white/10"
-                                    }`}>
-                                        {i === 1 && <span className="w-1.5 h-1.5 rounded-full bg-[var(--rare-blue)] animate-pulse" />}
-                                        {i === 1 ? "New Lead" : i === 2 ? "Reviewing" : "Contacted"}
-                                    </span>
-                                </td>
-                                <td className="p-6">
-                                    <div className="font-bold text-white text-lg">TechCorp {i}</div>
-                                    <div className="text-xs text-white/40 mt-1">Real Estate • 50-100 Emp</div>
-                                </td>
-                                <td className="p-6">
-                                    <div className="text-sm font-medium text-white/90">Sarah Johnson</div>
-                                    <div className="text-xs text-white/40 mt-0.5">sarah@techcorp.com</div>
-                                </td>
-                                <td className="p-6 text-sm">
-                                    <span className="inline-flex items-center px-2 py-1 rounded bg-white/[0.03] border border-white/10 text-xs text-white/60">
-                                        Website
-                                    </span>
-                                </td>
-                                <td className="p-6 text-sm text-white/60">
-                                    <div className="flex items-center gap-2">
-                                        <Clock size={14} className="text-[var(--aquamarine)]" /> 1-3 Months
-                                    </div>
-                                </td>
-                                <td className="p-6 text-right">
-                                    <MotionButton size="sm" variant="ghost" className="h-10 w-10 p-0 rounded-full hover:bg-white/10 text-white/40 hover:text-white">
-                                        <ArrowUpRight size={18} />
-                                    </MotionButton>
-                                </td>
-                                </motion.tr>
-                            ))}
-                            </tbody>
-                        </table>
+                        {isLoading ? (
+                            <div className="flex items-center justify-center p-20">
+                                <Loader2 className="animate-spin text-[var(--aquamarine)]" size={32} />
+                            </div>
+                        ) : leads.length === 0 ? (
+                            <div className="text-center py-20 text-white/40">
+                                No leads yet. They'll appear here once someone submits the contact form.
+                            </div>
+                        ) : (
+                            <table className="w-full text-left">
+                                <thead>
+                                <tr className="border-b border-white/10 text-white/40 text-xs uppercase tracking-wider bg-white/[0.02]">
+                                    <th className="p-6 font-medium">Status</th>
+                                    <th className="p-6 font-medium">Company</th>
+                                    <th className="p-6 font-medium">Contact</th>
+                                    <th className="p-6 font-medium">Service</th>
+                                    <th className="p-6 font-medium">Timeline</th>
+                                    <th className="p-6 font-medium">Date</th>
+                                </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/5">
+                                {leads.map((lead, i) => (
+                                    <motion.tr 
+                                        key={lead.id} 
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: i * 0.05 }}
+                                        className="hover:bg-white/[0.04] transition-colors group cursor-pointer"
+                                    >
+                                    <td className="p-6">
+                                        <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${
+                                            lead.status === "new" ? "bg-[var(--rare-blue)]/10 text-[var(--rare-blue)] border-[var(--rare-blue)]/20 shadow-[0_0_15px_-5px_var(--rare-blue)]" : 
+                                            lead.status === "reviewing" ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
+                                            "bg-white/5 text-white/40 border-white/10"
+                                        }`}>
+                                            {lead.status === "new" && <span className="w-1.5 h-1.5 rounded-full bg-[var(--rare-blue)] animate-pulse" />}
+                                            {lead.status}
+                                        </span>
+                                    </td>
+                                    <td className="p-6">
+                                        <div className="font-bold text-white text-lg">{lead.businessName}</div>
+                                        {lead.industry && <div className="text-xs text-white/40 mt-1">{lead.industry}</div>}
+                                    </td>
+                                    <td className="p-6">
+                                        <div className="text-sm font-medium text-white/90">{lead.email}</div>
+                                        {lead.phone && <div className="text-xs text-white/40 mt-0.5">{lead.phone}</div>}
+                                    </td>
+                                    <td className="p-6 text-sm">
+                                        <span className="inline-flex items-center px-2 py-1 rounded bg-white/[0.03] border border-white/10 text-xs text-white/60">
+                                            {lead.serviceType}
+                                        </span>
+                                    </td>
+                                    <td className="p-6 text-sm text-white/60">
+                                        <div className="flex items-center gap-2">
+                                            <Clock size={14} className="text-[var(--aquamarine)]" /> {lead.timeline}
+                                        </div>
+                                    </td>
+                                    <td className="p-6 text-sm text-white/60">
+                                        {new Date(lead.createdAt).toLocaleDateString()}
+                                    </td>
+                                    </motion.tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        )}
                     </div>
                     </GlassCard>
                 </motion.div>

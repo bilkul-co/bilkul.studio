@@ -60,14 +60,34 @@ export function LeadForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log(values);
-    setIsSubmitting(false);
-    toast({
-      title: "Inquiry Received",
-      description: "We've started a file for your project. A summary has been sent to your email.",
-    });
-    // Add success state visual if needed, currently toast handles it.
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit lead");
+      }
+
+      toast({
+        title: "Inquiry Received",
+        description: "We've started a file for your project. A summary has been sent to your email.",
+      });
+      
+      form.reset();
+      setCurrentStep(0);
+    } catch (error) {
+      console.error("Error submitting lead:", error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your inquiry. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const nextStep = async () => {
