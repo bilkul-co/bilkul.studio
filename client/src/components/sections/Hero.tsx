@@ -35,13 +35,8 @@ export function Hero() {
         onMouseMove={onMouseMove}
         className="relative min-h-[100vh] flex items-center justify-center pt-24 overflow-hidden group/hero"
     >
-      {/* Orbital System Background - Clean, Smooth, Geometric */}
-      <OrbitalBackground />
-      
-      {/* Texture Overlay */}
-      <div className="absolute inset-0 grid-bg opacity-[0.03] pointer-events-none mask-gradient-b" />
-      
-      <BackgroundBeams className="opacity-10" />
+      {/* Texture Overlay - Removed as per request, keeping it clean */}
+      {/* Only FloatingObjects from Home.tsx will be visible in the background */}
 
       <div className="container mx-auto px-6 relative z-20 text-center perspective-1000">
         <motion.div

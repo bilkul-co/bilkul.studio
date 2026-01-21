@@ -76,16 +76,23 @@ export function ServicesGrid() {
         >
           {services.map((service, index) => (
             <motion.div key={index} variants={transitions.stagger.item as any}>
-                <HolographicCard className="flex flex-col h-full min-h-[320px] p-8">
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.gradient} p-0.5 mb-8 shadow-lg shadow-white/5 group-hover:shadow-[var(--rare-blue)]/20 transition-all duration-500 group-hover:scale-105`}>
-                         <div className="w-full h-full bg-black/90 backdrop-blur-xl rounded-[14px] flex items-center justify-center">
-                            <service.icon size={26} strokeWidth={1.5} className="text-white" />
+                <HolographicCard className="flex flex-col h-full min-h-[320px] p-8 group/card">
+                    <div className={`relative w-14 h-14 rounded-2xl p-0.5 mb-8 transition-all duration-500 group-hover/card:scale-110`}>
+                         {/* Gradient Border & Glow */}
+                         <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} rounded-2xl opacity-100 group-hover/card:blur-md transition-all duration-500`} />
+                         <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} rounded-2xl opacity-100`} />
+                         
+                         {/* Inner Icon Container */}
+                         <div className="relative w-full h-full bg-[#030305] rounded-[14px] flex items-center justify-center z-10 group-hover/card:bg-opacity-90 transition-all duration-500">
+                            <service.icon size={26} strokeWidth={1.5} className="text-white group-hover/card:text-white transition-colors duration-300 relative z-10" />
+                            {/* Inner Color Fill on Hover */}
+                            <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover/card:opacity-20 rounded-[14px] transition-opacity duration-500`} />
                          </div>
                     </div>
-                    <h3 className="text-xl font-bold mb-4 text-white group-hover:text-[var(--aquamarine)] transition-colors">{service.title}</h3>
+                    <h3 className={`text-xl font-bold mb-4 text-white group-hover/card:text-transparent group-hover/card:bg-clip-text group-hover/card:bg-gradient-to-r ${service.gradient} transition-all duration-300`}>{service.title}</h3>
                     <p className="text-white/60 mb-8 flex-grow leading-relaxed text-base font-light">{service.description}</p>
-                    <div className="flex items-center text-xs font-medium uppercase tracking-wider text-white/40 group-hover:text-white transition-colors cursor-hover">
-                        Learn more <ArrowRight className="ml-2 h-3 w-3 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all" />
+                    <div className="flex items-center text-xs font-medium uppercase tracking-wider text-white/40 group-hover/card:text-white transition-colors cursor-hover">
+                        Learn more <ArrowRight className="ml-2 h-3 w-3 -translate-x-2 opacity-0 group-hover/card:translate-x-0 group-hover/card:opacity-100 transition-all" />
                     </div>
                 </HolographicCard>
             </motion.div>
