@@ -22,6 +22,18 @@ interface Lead {
   createdAt: string;
 }
 
+interface DemoBlueprint {
+  id: string;
+  brandName: string;
+  tagline: string;
+  tone: string;
+  primaryColor: string;
+  sections: any;
+  promptAnchors: string[] | null;
+  coverageScore: string | null;
+  createdAt: string;
+}
+
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
@@ -33,6 +45,16 @@ export default function Admin() {
     queryFn: async () => {
       const response = await fetch("/api/leads");
       if (!response.ok) throw new Error("Failed to fetch leads");
+      return response.json();
+    },
+    enabled: isAuthenticated,
+  });
+
+  const { data: demos = [], isLoading: isLoadingDemos } = useQuery<DemoBlueprint[]>({
+    queryKey: ["demo-blueprints"],
+    queryFn: async () => {
+      const response = await fetch("/api/demo-blueprints");
+      if (!response.ok) throw new Error("Failed to fetch demos");
       return response.json();
     },
     enabled: isAuthenticated,
@@ -105,7 +127,7 @@ export default function Admin() {
 
         {/* Navigation Tabs */}
         <div className="flex gap-6 border-b border-white/10 mb-8 overflow-x-auto">
-            {["leads", "content", "settings"].map((tab) => (
+            {["leads", "demos", "settings"].map((tab) => (
                 <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -236,38 +258,102 @@ export default function Admin() {
                 </motion.div>
             )}
 
-            {activeTab === "content" && (
+            {activeTab === "demos" && (
                 <motion.div
-                    key="content"
+                    key="demos"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <GlassCard className="p-8 flex items-center gap-6 cursor-pointer hover:border-[var(--rare-blue)]/50 transition-colors" noPadding>
-                            <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-white border border-white/10">
-                                <FileText size={32} />
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-bold text-white">Case Studies</h3>
-                                <p className="text-white/40">Manage portfolio items</p>
-                            </div>
-                        </GlassCard>
-                        <GlassCard className="p-8 flex items-center gap-6 cursor-pointer hover:border-[var(--rare-blue)]/50 transition-colors" noPadding>
-                            <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-white border border-white/10">
-                                <Database size={32} />
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-bold text-white">Testimonials</h3>
-                                <p className="text-white/40">Manage client reviews</p>
-                            </div>
-                        </GlassCard>
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+                        {[
+                            { label: "Total Demos", value: demos.length.toString(), color: "text-white" },
+                            { label: "Modern Minimal", value: demos.filter(d => d.tone === "modern-minimal").length.toString(), color: "text-[var(--aquamarine)]" },
+                            { label: "Calm Luxury", value: demos.filter(d => d.tone === "calm-luxury").length.toString(), color: "text-white" },
+                            { label: "Bold Premium", value: demos.filter(d => d.tone === "bold-premium").length.toString(), color: "text-white" }
+                        ].map((stat, i) => (
+                            <GlassCard key={i} className="p-6 border-white/5 bg-white/[0.02]" noPadding>
+                                <div className="p-6">
+                                    <p className="text-xs text-white/40 mb-2 font-mono uppercase tracking-wider">{stat.label}</p>
+                                    <div className="flex items-end justify-between">
+                                        <h3 className={`text-3xl font-bold font-display ${stat.color}`}>{stat.value}</h3>
+                                    </div>
+                                </div>
+                            </GlassCard>
+                        ))}
                     </div>
-                    
-                    <div className="text-center py-20 border border-dashed border-white/10 rounded-2xl bg-white/[0.01]">
-                        <p className="text-white/40">Select a content type to manage</p>
+
+                    <GlassCard className="overflow-hidden p-0 border-white/10 bg-black/40 backdrop-blur-xl">
+                    <div className="overflow-x-auto">
+                        {isLoadingDemos ? (
+                            <div className="flex items-center justify-center p-20">
+                                <Loader2 className="animate-spin text-[var(--aquamarine)]" size={32} />
+                            </div>
+                        ) : demos.length === 0 ? (
+                            <div className="text-center py-20 text-white/40">
+                                No demo prompts yet. They'll appear here once someone uses the AI demo generator.
+                            </div>
+                        ) : (
+                            <table className="w-full text-left">
+                                <thead>
+                                <tr className="border-b border-white/10 text-white/40 text-xs uppercase tracking-wider bg-white/[0.02]">
+                                    <th className="p-6 font-medium">Brand Name</th>
+                                    <th className="p-6 font-medium">Tagline</th>
+                                    <th className="p-6 font-medium">Style</th>
+                                    <th className="p-6 font-medium">Keywords</th>
+                                    <th className="p-6 font-medium">Date</th>
+                                </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/5">
+                                {demos.map((demo, i) => (
+                                    <motion.tr 
+                                        key={demo.id} 
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: i * 0.05 }}
+                                        className="hover:bg-white/[0.04] transition-colors group cursor-pointer"
+                                    >
+                                    <td className="p-6">
+                                        <div className="font-bold text-white text-lg">{demo.brandName}</div>
+                                        <div className="text-xs text-white/40 mt-1">{demo.primaryColor}</div>
+                                    </td>
+                                    <td className="p-6">
+                                        <div className="text-sm text-white/90 max-w-xs">{demo.tagline}</div>
+                                    </td>
+                                    <td className="p-6 text-sm">
+                                        <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${
+                                            demo.tone === "modern-minimal" ? "bg-[var(--aquamarine)]/10 text-[var(--aquamarine)] border-[var(--aquamarine)]/20" :
+                                            demo.tone === "calm-luxury" ? "bg-purple-500/10 text-purple-400 border-purple-500/20" :
+                                            demo.tone === "bold-premium" ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
+                                            "bg-[var(--rare-blue)]/10 text-[var(--rare-blue)] border-[var(--rare-blue)]/20"
+                                        }`}>
+                                            {demo.tone.replace("-", " ")}
+                                        </span>
+                                    </td>
+                                    <td className="p-6 text-sm">
+                                        <div className="flex flex-wrap gap-1 max-w-xs">
+                                            {demo.promptAnchors?.slice(0, 4).map((anchor, idx) => (
+                                                <span key={idx} className="inline-flex items-center px-2 py-1 rounded bg-white/[0.03] border border-white/10 text-xs text-white/60">
+                                                    {anchor}
+                                                </span>
+                                            ))}
+                                            {demo.promptAnchors && demo.promptAnchors.length > 4 && (
+                                                <span className="text-xs text-white/40">+{demo.promptAnchors.length - 4}</span>
+                                            )}
+                                        </div>
+                                    </td>
+                                    <td className="p-6 text-sm text-white/60">
+                                        {new Date(demo.createdAt).toLocaleDateString()}
+                                    </td>
+                                    </motion.tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        )}
                     </div>
+                    </GlassCard>
                 </motion.div>
             )}
         </AnimatePresence>

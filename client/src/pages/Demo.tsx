@@ -48,7 +48,6 @@ export default function DemoWizard() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: blueprint.id,
           brandName: blueprint.brandName,
           tagline: blueprint.tagline,
           tone: blueprint.tone,

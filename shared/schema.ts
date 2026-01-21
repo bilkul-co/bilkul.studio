@@ -53,6 +53,7 @@ export const demoBlueprints = pgTable("demo_blueprints", {
 });
 
 export const insertDemoBlueprintSchema = createInsertSchema(demoBlueprints).omit({
+  id: true,
   createdAt: true,
 });
 
