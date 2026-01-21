@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform, useMotionTemplate, useMotionValue } fr
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { ArrowRight, ShieldCheck, Zap, BarChart, Play } from "lucide-react";
 import { transitions } from "@/lib/motion";
-import { FluidBackground } from "@/components/ui/fluid-background";
+import { ArchitecturalBackground } from "@/components/ui/architectural-background";
 import { useRef, useEffect } from "react";
 import { TextScramble } from "@/components/ui/text-scramble";
 
@@ -35,11 +35,10 @@ export function Hero() {
         onMouseMove={onMouseMove}
         className="relative min-h-[100vh] flex items-center justify-center pt-24 overflow-hidden group/hero"
     >
-      {/* Liquid Fluid Background - Darker Void */}
-      <FluidBackground className="opacity-80 mix-blend-normal" />
+      {/* New Architectural Background - Replaces Aurora */}
+      <ArchitecturalBackground />
       
       {/* Texture Overlay */}
-      <div className="absolute inset-0 z-0 opacity-15 pointer-events-none noise-bg mix-blend-overlay" />
       <div className="absolute inset-0 grid-bg opacity-[0.05] pointer-events-none mask-gradient-b" />
       
       <BackgroundBeams className="opacity-10" />
