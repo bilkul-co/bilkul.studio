@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
 import { transitions } from "@/lib/motion";
+import { HolographicCard } from "@/components/ui/holographic-card";
 
 const steps = [
   {
@@ -57,7 +58,7 @@ export function ProcessTimeline() {
           variants={transitions.section}
           className="mb-24 text-center max-w-3xl mx-auto"
         >
-          <span className="text-primary font-mono text-xs tracking-[0.2em] uppercase mb-4 block">The Bilkul Method</span>
+          <span className="text-[var(--aquamarine)] font-mono text-xs tracking-[0.2em] uppercase mb-4 block">The Bilkul Method</span>
           <h2 className="text-5xl md:text-6xl font-display font-bold mb-6">How We Build</h2>
           <p className="text-xl text-muted-foreground font-light">A rigorous, scientific approach to creative problems.</p>
         </motion.div>
@@ -67,7 +68,7 @@ export function ProcessTimeline() {
           <div className="absolute left-[19px] md:left-1/2 top-0 bottom-0 w-px bg-white/5 md:-translate-x-1/2">
              <motion.div 
                 style={{ height: lineHeight }}
-                className="w-full bg-gradient-to-b from-primary via-cyan-400 to-primary shadow-[0_0_15px_1px_rgba(56,189,248,0.5)]"
+                className="w-full bg-gradient-to-b from-[var(--rare-blue)] via-[var(--aquamarine)] to-[var(--rare-blue)] shadow-[0_0_15px_1px_rgba(56,189,248,0.5)]"
              />
           </div>
 
@@ -85,27 +86,29 @@ export function ProcessTimeline() {
                 )}
               >
                 {/* Number Bubble */}
-                <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 w-10 h-10 rounded-full bg-[#05050A] border border-white/10 flex items-center justify-center font-mono text-xs text-primary shadow-2xl z-10 group ring-4 ring-background">
-                  <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping opacity-0 group-hover:opacity-30 transition-opacity" />
+                <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 w-10 h-10 rounded-full bg-[#05050A] border border-white/10 flex items-center justify-center font-mono text-xs text-[var(--aquamarine)] shadow-2xl z-10 group ring-4 ring-background">
+                  <div className="absolute inset-0 bg-[var(--aquamarine)]/20 rounded-full animate-ping opacity-0 group-hover:opacity-30 transition-opacity" />
                   <span className="relative z-10 font-bold">{step.number}</span>
                 </div>
 
                 {/* Content */}
                 <div className={cn(
-                  "ml-16 md:ml-0 md:w-[42%] p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 hover:border-white/10 backdrop-blur-sm group",
+                  "ml-16 md:ml-0 md:w-[42%]",
                   index % 2 === 0 ? "md:text-left" : "md:text-right"
                 )}>
-                  <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-primary transition-colors">{step.title}</h3>
-                  <div className={cn("flex flex-wrap gap-2 mb-6", index % 2 === 0 ? "" : "md:justify-end")}>
-                    {step.tags.map(tag => (
-                        <span key={tag} className="text-[10px] uppercase tracking-wider font-mono text-muted-foreground bg-white/5 px-2 py-1 rounded border border-white/5">
-                            {tag}
-                        </span>
-                    ))}
-                  </div>
-                  <p className="text-muted-foreground leading-relaxed text-lg font-light">
-                    {step.desc}
-                  </p>
+                  <HolographicCard className="p-8 backdrop-blur-sm group h-full">
+                    <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-[var(--aquamarine)] transition-colors">{step.title}</h3>
+                    <div className={cn("flex flex-wrap gap-2 mb-6", index % 2 === 0 ? "" : "md:justify-end")}>
+                        {step.tags.map(tag => (
+                            <span key={tag} className="text-[10px] uppercase tracking-wider font-mono text-white/40 bg-white/5 px-2 py-1 rounded border border-white/5 group-hover:border-[var(--aquamarine)]/20 transition-colors">
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                    <p className="text-white/60 leading-relaxed text-lg font-light">
+                        {step.desc}
+                    </p>
+                  </HolographicCard>
                 </div>
                 
                 {/* Spacer */}

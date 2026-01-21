@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 export function Footer() {
   return (
@@ -9,13 +10,10 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-12 mb-20">
           <div className="col-span-2">
             <Link href="/">
-              <a className="flex items-center gap-2 mb-6 group">
-                <div className="relative w-8 h-8">
+              <a className="flex items-center gap-2 mb-6 group w-fit">
+                <div className="relative w-10 h-10">
                     <img src="/brand/logo.png" alt="Bilkul" className="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity" />
                 </div>
-                <span className="text-2xl font-display font-bold tracking-tighter text-white">
-                  Bilkul<span className="text-[var(--aquamarine)]">.</span>
-                </span>
               </a>
             </Link>
             <p className="text-white/50 max-w-md text-lg font-light leading-relaxed">
@@ -34,12 +32,17 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-display font-semibold mb-8 text-white">Connect</h4>
-            <ul className="space-y-4">
-              <li><a href="#" className="text-white/50 hover:text-[var(--aquamarine)] transition-colors">LinkedIn</a></li>
-              <li><a href="#" className="text-white/50 hover:text-[var(--aquamarine)] transition-colors">Twitter</a></li>
-              <li><a href="#" className="text-white/50 hover:text-[var(--aquamarine)] transition-colors">Instagram</a></li>
-              <li><Link href="/contact"><a className="text-white/50 hover:text-[var(--aquamarine)] transition-colors">Contact Us</a></Link></li>
+            <h4 className="font-display font-semibold mb-8 text-white">Contact</h4>
+            <ul className="space-y-6">
+              <li className="flex items-start gap-3 text-white/50 hover:text-white transition-colors">
+                <Phone size={18} className="mt-1 text-[var(--aquamarine)]" />
+                <span>+971-555-639-160</span>
+              </li>
+              <li className="flex items-start gap-3 text-white/50 hover:text-white transition-colors">
+                <MapPin size={18} className="mt-1 text-[var(--aquamarine)]" />
+                <span>Bilkul Technologies<br/>Jumeirah Garden City, Dubai</span>
+              </li>
+              <li><Link href="/contact"><a className="text-white/50 hover:text-[var(--aquamarine)] transition-colors flex items-center gap-2">Contact Form <span className="text-[var(--aquamarine)]">→</span></a></Link></li>
             </ul>
           </div>
         </div>
