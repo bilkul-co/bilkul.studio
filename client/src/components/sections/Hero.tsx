@@ -87,7 +87,7 @@ export function Hero() {
                     transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.6 }}
                     className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50 relative z-10 origin-bottom"
                 >
-                    <span className="text-gradient-primary shine-effect">Next Generation.</span>
+                    <span className="text-gradient-primary">Next Generation.</span>
                 </motion.span>
                 </h1>
                 
