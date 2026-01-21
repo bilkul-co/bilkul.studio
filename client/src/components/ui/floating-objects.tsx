@@ -82,9 +82,7 @@ export function FloatingObjects() {
         style={{ y: ySlow, rotate: rotateReverse }} 
         className="absolute top-[25%] left-[10%] w-[12vw] max-w-[160px] opacity-70 blur-[1px] z-0"
       >
-        <img src={shapes.sphere} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "2.5s" }} 
-             onError={(e) => e.currentTarget.src = shapes.dodecahedron} // Fallback
-        />
+        <img src={shapes.dodecahedron} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "2.5s" }} />
       </motion.div>
 
       {/* --- ZONE 4: UPPER MID RIGHT --- */}

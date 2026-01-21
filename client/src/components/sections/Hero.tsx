@@ -35,33 +35,6 @@ export function Hero() {
         onMouseMove={onMouseMove}
         className="relative min-h-[100vh] flex items-center justify-center pt-24 overflow-hidden group/hero"
     >
-      {/* Video Background Layer - High Clarity */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden mix-blend-screen opacity-90">
-        <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline
-            className="w-full h-full object-cover scale-110 opacity-80 blur-[2px] contrast-125 saturate-0 brightness-150"
-        >
-            <source src="/assets/sphere-bg.mp4" type="video/mp4" />
-        </video>
-      </div>
-
-      {/* Spotlight Overlay */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-10 transition duration-300 opacity-0 group-hover/hero:opacity-100"
-        style={{
-          background: useMotionTemplate`
-            radial-gradient(
-              600px circle at ${mouseX}px ${mouseY}px,
-              rgba(255,255,255,0.03),
-              transparent 80%
-            )
-          `,
-        }}
-      />
-
       {/* Liquid Fluid Background - Darker Void */}
       <FluidBackground className="opacity-80 mix-blend-normal" />
       
@@ -84,7 +57,7 @@ export function Hero() {
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
               className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/[0.02] border border-white/[0.08] text-sm font-medium text-white/80 mb-10 backdrop-blur-md shadow-[0_0_30px_-10px_rgba(45,107,255,0.1)] hover:bg-white/[0.05] transition-colors hover:scale-105 cursor-default group relative z-30 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shine" />
@@ -93,7 +66,7 @@ export function Hero() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--aquamarine)]"></span>
               </span>
               <span className="text-xs uppercase tracking-[0.2em] font-mono group-hover:text-[var(--aquamarine)] transition-colors text-shadow-glow">
-                 <TextScramble speed={50} delay={1000}>Systems Studio • UAE</TextScramble>
+                 Systems Studio • UAE
               </span>
             </motion.div>
             
@@ -102,17 +75,17 @@ export function Hero() {
                 <div className="absolute inset-0 -z-10 bg-radial-gradient from-black/80 to-transparent blur-3xl opacity-80 rounded-full scale-125" />
                 <h1 className="text-6xl md:text-8xl lg:text-9xl font-display font-bold tracking-tighter leading-[0.9] mb-8 text-white drop-shadow-2xl">
                 <motion.span 
-                    initial={{ opacity: 0, y: 100, rotateX: 20 }}
+                    initial={{ opacity: 0, y: 60, rotateX: -5 }}
                     animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                    transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
                     className="block relative z-10 origin-bottom"
                 >
-                   <TextScramble delay={500} speed={40}>Systems for the</TextScramble>
+                   Systems for the
                 </motion.span>
                 <motion.span 
-                    initial={{ opacity: 0, y: 100, rotateX: 20 }}
+                    initial={{ opacity: 0, y: 60, rotateX: -5 }}
                     animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                    transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.6 }}
                     className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50 relative z-10 origin-bottom"
                 >
                     <span className="text-gradient-primary shine-effect">Next Generation.</span>
@@ -120,9 +93,9 @@ export function Hero() {
                 </h1>
                 
                 <motion.p 
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
+                transition={{ delay: 0.8, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                 className="text-xl md:text-2xl text-white/70 max-w-3xl mx-auto mb-14 leading-relaxed font-light mix-blend-plus-lighter relative z-10"
                 >
                 We engineer premium digital ecosystems, portals, and AI workflows. 
@@ -159,11 +132,11 @@ export function Hero() {
                     key={i} 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.9 + (i * 0.1) }}
+                    transition={{ delay: 1.2 + (i * 0.1), duration: 0.8 }}
                     className="flex items-center gap-3 text-sm font-mono uppercase tracking-wider text-white/40 hover:text-white transition-colors cursor-default"
                  >
                     <item.icon size={16} className="text-[var(--rare-blue)] drop-shadow-[0_0_8px_var(--rare-blue)]" />
-                    <TextScramble delay={1500 + (i * 100)} speed={30}>{item.text}</TextScramble>
+                    {item.text}
                  </motion.div>
                ))}
             </div>
