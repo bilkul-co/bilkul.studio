@@ -52,7 +52,7 @@ export function FloatingObjects() {
   const scaleEffect = useSpring(useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.1, 1]), springConfig);
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 h-full w-full">
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 h-full w-full transition-all duration-700 ease-out floating-objects-layer">
       {/* 
         GRID DISTRIBUTION STRATEGY:
         Expanded to cover more vertical space since we have scroll animations.

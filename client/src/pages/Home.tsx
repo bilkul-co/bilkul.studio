@@ -12,7 +12,7 @@ import { FloatingObjects } from "@/components/ui/floating-objects";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/20 relative">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/20 relative home-wrapper">
       <FloatingObjects />
       <Navbar />
       <main className="relative z-10">

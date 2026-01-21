@@ -243,4 +243,10 @@
     left: 100%;
     transition: left 0.7s ease-in-out;
   }
+
+  /* Service Card Hover Interaction: Blur Background */
+  .home-wrapper:has(.service-card:hover) .floating-objects-layer {
+    filter: blur(12px) brightness(0.7);
+    transform: scale(1.02);
+  }
 }

@@ -66,7 +66,7 @@ export function Hero() {
             
             {/* Text pops up clearly with a backdrop for readability */}
             <div className="relative z-30">
-                <div className="absolute inset-0 -z-10 bg-radial-gradient from-black/80 to-transparent blur-3xl opacity-80 rounded-full scale-125" />
+                <div className="absolute inset-0 -z-10 bg-radial-gradient from-black/80 to-transparent blur-3xl opacity-80 rounded-full scale-125 pointer-events-none backdrop-blur-[2px]" />
                 <h1 className="text-6xl md:text-8xl lg:text-9xl font-display font-bold tracking-tighter leading-[0.9] mb-8 text-white drop-shadow-2xl">
                 <motion.span 
                     initial={{ opacity: 0, y: 60, rotateX: -5 }}

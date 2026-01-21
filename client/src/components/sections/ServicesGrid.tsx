@@ -76,7 +76,7 @@ export function ServicesGrid() {
         >
           {services.map((service, index) => (
             <motion.div key={index} variants={transitions.stagger.item as any}>
-                <HolographicCard className="flex flex-col h-full min-h-[320px] p-8 group/card">
+                <HolographicCard className="flex flex-col h-full min-h-[320px] p-8 group/card service-card">
                     <div className={`relative w-14 h-14 rounded-2xl p-0.5 mb-8 transition-all duration-500 group-hover/card:scale-110`}>
                          {/* Gradient Border & Glow */}
                          <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} rounded-2xl opacity-100 group-hover/card:blur-md transition-all duration-500`} />
