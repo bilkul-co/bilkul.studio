@@ -1,24 +1,26 @@
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
 
-// Asset paths
+// Updated Asset paths using new blue 3D shapes
 const shapes = {
-  cylinder: "/assets/shapes/cylinder.png",
-  cone: "/assets/shapes/cone.png",
-  lightning: "/assets/shapes/lightning.png",
-  jack: "/assets/shapes/jack.png",
-  cubesFalling: "/assets/shapes/cubes-falling.png",
-  coil: "/assets/shapes/coil.png",
-  sphere: "/assets/shapes/sphere.png",
-  diamond: "/assets/shapes/diamond.png",
-  triangle: "/assets/shapes/triangle.png",
-  cube: "/assets/shapes/cube.png",
-  star: "/assets/shapes/star.png",
+  triangleRounded: "/assets/shapes-new/blue-triangle-rounded.png",
+  torusKnot: "/assets/shapes-new/blue-torus-knot.png",
+  cubeHole: "/assets/shapes-new/blue-cube-hole.png",
+  crossRounded: "/assets/shapes-new/blue-cross-rounded.png",
+  jackRounded: "/assets/shapes-new/blue-jack-rounded.png",
+  torus: "/assets/shapes-new/blue-torus.png",
+  dodecahedron: "/assets/shapes-new/blue-dodecahedron.png",
+  starBurst: "/assets/shapes-new/blue-star-burst.png",
+  diamondDouble: "/assets/shapes-new/blue-diamond-double.png",
+  hexagon: "/assets/shapes-new/blue-hexagon.png",
+  tubeCurve: "/assets/shapes-new/blue-tube-curve-c.png",
+  spring: "/assets/shapes-new/blue-spring.png",
+  starFour: "/assets/shapes-new/blue-star-four.png",
+  cylinderHole: "/assets/shapes-new/blue-cylinder-hole.png",
+  pyramidTall: "/assets/shapes-new/blue-pyramid-tall.png",
+  
+  // Legacy or backup shapes if needed, though we will replace most
   blobDark: "/assets/shapes/blob-dark.png",
-  cubesCluster: "/assets/shapes/cubes-cluster.png",
-  torus: "/assets/shapes/torus.png",
-  blobIridescent: "/assets/shapes/blob-iridescent.png",
-  tube: "/assets/shapes/tube.png",
 };
 
 export function FloatingObjects() {
@@ -28,109 +30,127 @@ export function FloatingObjects() {
     offset: ["start start", "end end"]
   });
 
-  const springConfig = { stiffness: 40, damping: 20, restDelta: 0.001 };
+  const springConfig = { stiffness: 30, damping: 20, restDelta: 0.001 };
   
   // Create distinct vertical tracks for parallax to prevent collision
-  // Track 1: Fast (Foreground)
-  const yFast = useSpring(useTransform(scrollYProgress, [0, 1], [0, -1500]), springConfig);
+  // Track 1: Fast (Foreground) - Move faster
+  const yFast = useSpring(useTransform(scrollYProgress, [0, 1], [0, -1800]), springConfig);
   
   // Track 2: Medium (Midground)
-  const yMedium = useSpring(useTransform(scrollYProgress, [0, 1], [0, -800]), springConfig);
+  const yMedium = useSpring(useTransform(scrollYProgress, [0, 1], [0, -1000]), springConfig);
   
   // Track 3: Slow (Background)
-  const ySlow = useSpring(useTransform(scrollYProgress, [0, 1], [0, -300]), springConfig);
+  const ySlow = useSpring(useTransform(scrollYProgress, [0, 1], [0, -400]), springConfig);
   
-  // Reverse direction tracks for variety
-  const yReverseMedium = useSpring(useTransform(scrollYProgress, [0, 1], [0, 600]), springConfig);
+  // Reverse direction tracks for variety (Objects moving UP as you scroll DOWN)
+  const yReverseMedium = useSpring(useTransform(scrollYProgress, [0, 1], [0, 800]), springConfig);
+  const yReverseFast = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1200]), springConfig);
 
-  // Rotations
-  const rotateSlow = useSpring(useTransform(scrollYProgress, [0, 1], [0, 45]), springConfig);
-  const rotateFast = useSpring(useTransform(scrollYProgress, [0, 1], [0, 180]), springConfig);
-  const rotateReverse = useSpring(useTransform(scrollYProgress, [0, 1], [0, -90]), springConfig);
+  // Rotations - Continuous
+  const rotateSlow = useSpring(useTransform(scrollYProgress, [0, 1], [0, 60]), springConfig);
+  const rotateFast = useSpring(useTransform(scrollYProgress, [0, 1], [0, 240]), springConfig);
+  const rotateReverse = useSpring(useTransform(scrollYProgress, [0, 1], [0, -120]), springConfig);
+  
+  // Scales (Subtle breathing effect or zoom on scroll)
+  const scaleEffect = useSpring(useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.1, 1]), springConfig);
 
   return (
-    <div ref={ref} className="fixed inset-0 overflow-hidden pointer-events-none z-0 h-[120vh] w-full">
+    <div ref={ref} className="fixed inset-0 overflow-hidden pointer-events-none z-0 h-[150vh] w-full">
       {/* 
         GRID DISTRIBUTION STRATEGY:
-        Divide screen into roughly 6 zones (Top-Left, Top-Right, Mid-Left, Mid-Right, Bot-Left, Bot-Right)
-        and ensure spacing.
+        Expanded to cover more vertical space since we have scroll animations.
       */}
 
       {/* --- ZONE 1: TOP LEFT (Hero Area) --- */}
       <motion.div 
         style={{ y: yMedium, rotate: rotateSlow }} 
-        className="absolute top-[8%] left-[3%] w-[12vw] max-w-[180px] opacity-90 z-10"
+        className="absolute top-[5%] left-[2%] w-[14vw] max-w-[200px] opacity-90 z-10"
       >
-        <img src={shapes.torus} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "0s" }} />
+        <img src={shapes.torusKnot} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "0s" }} />
       </motion.div>
 
       {/* --- ZONE 2: TOP RIGHT (Hero Area) --- */}
       <motion.div 
         style={{ y: yFast, rotate: rotateFast }} 
-        className="absolute top-[12%] right-[5%] w-[16vw] max-w-[240px] opacity-100 z-20"
+        className="absolute top-[10%] right-[3%] w-[18vw] max-w-[260px] opacity-100 z-20"
       >
-        <img src={shapes.blobIridescent} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "1.5s" }} />
+        <img src={shapes.dodecahedron} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "1.5s" }} />
       </motion.div>
 
       {/* --- ZONE 3: UPPER MID LEFT (Service Area) --- */}
       <motion.div 
         style={{ y: ySlow, rotate: rotateReverse }} 
-        className="absolute top-[35%] left-[8%] w-[10vw] max-w-[140px] opacity-70 blur-[1px] z-0"
+        className="absolute top-[25%] left-[10%] w-[12vw] max-w-[160px] opacity-70 blur-[1px] z-0"
       >
-        <img src={shapes.sphere} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "2.5s" }} />
+        <img src={shapes.sphere} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "2.5s" }} 
+             onError={(e) => e.currentTarget.src = shapes.dodecahedron} // Fallback
+        />
       </motion.div>
 
       {/* --- ZONE 4: UPPER MID RIGHT --- */}
       <motion.div 
         style={{ y: yReverseMedium, rotate: rotateSlow }} 
-        className="absolute top-[40%] right-[12%] w-[9vw] max-w-[120px] opacity-80 z-10"
+        className="absolute top-[30%] right-[15%] w-[10vw] max-w-[140px] opacity-80 z-10"
       >
-        <img src={shapes.diamond} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "3s" }} />
+        <img src={shapes.diamondDouble} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "3s" }} />
       </motion.div>
 
       {/* --- ZONE 5: CENTER FLOAT (Transition) --- */}
       <motion.div 
-        style={{ y: yMedium, rotate: rotateFast }} 
-        className="absolute top-[55%] left-[25%] w-[14vw] max-w-[200px] opacity-60 z-0"
+        style={{ y: yMedium, rotate: rotateFast, scale: scaleEffect }} 
+        className="absolute top-[45%] left-[30%] w-[16vw] max-w-[220px] opacity-60 z-0"
       >
-        <img src={shapes.cubesFalling} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "0.5s" }} />
+        <img src={shapes.cubeHole} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "0.5s" }} />
       </motion.div>
 
       {/* --- ZONE 6: MID LEFT (Work Area) --- */}
       <motion.div 
         style={{ y: yFast, rotate: rotateReverse }} 
-        className="absolute top-[65%] left-[5%] w-[11vw] max-w-[160px] opacity-80 z-10"
+        className="absolute top-[55%] left-[5%] w-[13vw] max-w-[180px] opacity-80 z-10"
       >
-        <img src={shapes.coil} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "4s" }} />
+        <img src={shapes.spring} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "4s" }} />
       </motion.div>
 
       {/* --- ZONE 7: MID RIGHT (Work Area) --- */}
       <motion.div 
         style={{ y: ySlow, rotate: rotateFast }} 
-        className="absolute top-[60%] right-[5%] w-[13vw] max-w-[190px] opacity-75 z-10"
+        className="absolute top-[60%] right-[8%] w-[15vw] max-w-[210px] opacity-75 z-10"
       >
-        <img src={shapes.jack} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "1.2s" }} />
+        <img src={shapes.jackRounded} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "1.2s" }} />
       </motion.div>
 
       {/* --- ZONE 8: LOWER LEFT (Footer/Bottom) --- */}
       <motion.div 
-        style={{ y: yReverseMedium, rotate: rotateSlow }} 
-        className="absolute top-[80%] left-[15%] w-[15vw] max-w-[220px] opacity-50 blur-[2px] z-0"
+        style={{ y: yReverseFast, rotate: rotateSlow }} 
+        className="absolute top-[75%] left-[12%] w-[16vw] max-w-[240px] opacity-50 blur-[1px] z-0"
       >
-        <img src={shapes.tube} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "2s" }} />
+        <img src={shapes.tubeCurve} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "2s" }} />
       </motion.div>
 
       {/* --- ZONE 9: LOWER RIGHT (Footer/Bottom) --- */}
       <motion.div 
         style={{ y: yFast, rotate: rotateFast }} 
-        className="absolute top-[85%] right-[8%] w-[12vw] max-w-[170px] opacity-80 z-10"
+        className="absolute top-[85%] right-[10%] w-[14vw] max-w-[190px] opacity-80 z-10"
       >
-        <img src={shapes.lightning} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "3.5s" }} />
+        <img src={shapes.starBurst} alt="" className="w-full h-full object-contain animate-float" style={{ animationDelay: "3.5s" }} />
       </motion.div>
 
-      {/* Tiny Accents - Scattered without overlay */}
-      <motion.div style={{ y: yMedium }} className="absolute top-[25%] left-[40%] w-8 opacity-60"><img src={shapes.star} className="w-full" alt="" /></motion.div>
-      <motion.div style={{ y: ySlow }} className="absolute top-[75%] right-[35%] w-6 opacity-50"><img src={shapes.star} className="w-full" alt="" /></motion.div>
+       {/* --- EXTRA ACCENTS --- */}
+      <motion.div style={{ y: yMedium, rotate: rotateSlow }} className="absolute top-[20%] left-[50%] w-[8vw] max-w-[100px] opacity-60">
+          <img src={shapes.starFour} className="w-full object-contain animate-float" alt="" style={{ animationDelay: "1s" }} />
+      </motion.div>
+      
+      <motion.div style={{ y: yReverseMedium, rotate: rotateFast }} className="absolute top-[65%] left-[45%] w-[10vw] max-w-[130px] opacity-50 blur-[1px]">
+          <img src={shapes.cylinderHole} className="w-full object-contain animate-float" alt="" style={{ animationDelay: "2.2s" }} />
+      </motion.div>
+
+      <motion.div style={{ y: ySlow, rotate: rotateReverse }} className="absolute top-[80%] right-[35%] w-[12vw] max-w-[150px] opacity-60">
+          <img src={shapes.pyramidTall} className="w-full object-contain animate-float" alt="" style={{ animationDelay: "0.8s" }} />
+      </motion.div>
+      
+      <motion.div style={{ y: yFast, rotate: rotateSlow }} className="absolute top-[40%] right-[40%] w-[6vw] max-w-[80px] opacity-40">
+          <img src={shapes.hexagon} className="w-full object-contain animate-float" alt="" style={{ animationDelay: "3.2s" }} />
+      </motion.div>
       
        {/* Background Deep Elements (Slow Moving Ambiance) */}
        <motion.div 
