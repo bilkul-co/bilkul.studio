@@ -5,7 +5,14 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { transitions } from "@/lib/motion";
 
-const projects = [
+const projects: Array<{
+  title: string;
+  category: string;
+  image: string;
+  tags: string[];
+  summary: string;
+  link?: string;
+}> = [
   {
     title: "Dubai Future Foundation",
     category: "System Design",
@@ -14,11 +21,12 @@ const projects = [
     summary: "A unified digital gateway for Dubai's innovation ecosystem."
   },
   {
-    title: "Emaar Lifestyle App",
-    category: "Mobile Experience",
-    image: "https://images.unsplash.com/photo-1512453979798-5ea904ac6605?q=80&w=2070&auto=format&fit=crop",
-    tags: ["App", "React Native", "UX Strategy"],
-    summary: "Reimagining luxury living through a seamless mobile concierge."
+    title: "Veneno Car Rental",
+    category: "Web Application",
+    image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=2070&auto=format&fit=crop",
+    tags: ["Web App", "React", "Booking System"],
+    summary: "Premium car rental platform with seamless booking experience.",
+    link: "https://veneno-drive--Abdulhaadi71.replit.app"
   },
   {
     title: "Abu Dhabi Finance AI",
@@ -59,8 +67,8 @@ export function FeaturedWork() {
             viewport={{ once: true }}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {projects.map((project, index) => (
-            <motion.div key={index} variants={transitions.stagger.item as any}>
+          {projects.map((project, index) => {
+            const cardContent = (
                 <GlassCard 
                 hoverEffect 
                 spotlight
@@ -100,8 +108,18 @@ export function FeaturedWork() {
                     </div>
                 </div>
                 </GlassCard>
-            </motion.div>
-          ))}
+            );
+            
+            return (
+              <motion.div key={index} variants={transitions.stagger.item as any}>
+                {project.link ? (
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="block">
+                    {cardContent}
+                  </a>
+                ) : cardContent}
+              </motion.div>
+            );
+          })}
         </motion.div>
         
         <div className="mt-12 md:hidden">
