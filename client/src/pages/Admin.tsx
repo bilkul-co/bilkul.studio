@@ -3,10 +3,10 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { useToast } from "@/hooks/use-toast";
 import { MotionButton } from "@/components/ui/motion-button";
 import { BackgroundBeams } from "@/components/ui/background-beams";
-import { Loader2, Search, Filter, Download, User, ArrowUpRight, CheckCircle2, Clock, ShieldAlert, FileText, Settings, Database } from "lucide-react";
+import { Loader2, Search, Filter, Download, User, ArrowUpRight, CheckCircle2, Clock, ShieldAlert, FileText, Settings, Database, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { transitions } from "@/lib/motion";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Lead {
   id: string;
@@ -34,11 +34,14 @@ interface DemoBlueprint {
   createdAt: string;
 }
 
+const STATUS_OPTIONS = ["new", "contacted", "reviewing", "closed"];
+
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("leads");
+  const queryClient = useQueryClient();
   
   const { data: leads = [], isLoading } = useQuery<Lead[]>({
     queryKey: ["leads"],
@@ -59,6 +62,49 @@ export default function Admin() {
     },
     enabled: isAuthenticated,
   });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const response = await fetch(`/api/leads/${id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!response.ok) throw new Error("Failed to update status");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
+      toast({ title: "Status Updated", description: "Lead status has been changed." });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to update status.", variant: "destructive" });
+    },
+  });
+
+  const exportToCSV = (data: any[], filename: string) => {
+    if (data.length === 0) return;
+    const headers = Object.keys(data[0]);
+    const csvContent = [
+      headers.join(","),
+      ...data.map(row => 
+        headers.map(h => {
+          const val = row[h];
+          if (Array.isArray(val)) return `"${val.join("; ")}"`;
+          if (typeof val === "string" && (val.includes(",") || val.includes('"'))) {
+            return `"${val.replace(/"/g, '""')}"`;
+          }
+          return val ?? "";
+        }).join(",")
+      )
+    ].join("\n");
+    
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${filename}_${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +162,12 @@ export default function Admin() {
                 <h1 className="text-3xl md:text-4xl font-display font-bold text-white">Dashboard</h1>
             </div>
             <div className="flex gap-3">
-                <MotionButton variant="outline" size="sm" className="border-white/10 hover:bg-white/5 gap-2 text-white/80">
+                <MotionButton 
+                    variant="outline" 
+                    size="sm" 
+                    className="border-white/10 hover:bg-white/5 gap-2 text-white/80"
+                    onClick={() => exportToCSV(activeTab === "leads" ? leads : demos, activeTab)}
+                >
                     <Download size={14} /> Export CSV
                 </MotionButton>
                 <MotionButton variant="ghost" size="sm" onClick={() => setIsAuthenticated(false)} className="text-white/60 hover:text-white hover:bg-white/5">
@@ -218,14 +269,24 @@ export default function Admin() {
                                         className="hover:bg-white/[0.04] transition-colors group cursor-pointer"
                                     >
                                     <td className="p-6">
-                                        <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${
-                                            lead.status === "new" ? "bg-[var(--rare-blue)]/10 text-[var(--rare-blue)] border-[var(--rare-blue)]/20 shadow-[0_0_15px_-5px_var(--rare-blue)]" : 
-                                            lead.status === "reviewing" ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
-                                            "bg-white/5 text-white/40 border-white/10"
-                                        }`}>
-                                            {lead.status === "new" && <span className="w-1.5 h-1.5 rounded-full bg-[var(--rare-blue)] animate-pulse" />}
-                                            {lead.status}
-                                        </span>
+                                        <div className="relative inline-block">
+                                            <select
+                                                value={lead.status}
+                                                onChange={(e) => updateStatusMutation.mutate({ id: lead.id, status: e.target.value })}
+                                                className={`appearance-none cursor-pointer pr-8 pl-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border bg-transparent focus:outline-none ${
+                                                    lead.status === "new" ? "bg-[var(--rare-blue)]/10 text-[var(--rare-blue)] border-[var(--rare-blue)]/20" : 
+                                                    lead.status === "contacted" ? "bg-green-500/10 text-green-400 border-green-500/20" :
+                                                    lead.status === "reviewing" ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
+                                                    lead.status === "closed" ? "bg-white/5 text-white/40 border-white/10" :
+                                                    "bg-white/5 text-white/40 border-white/10"
+                                                }`}
+                                            >
+                                                {STATUS_OPTIONS.map(s => (
+                                                    <option key={s} value={s} className="bg-[#0a0a0a] text-white">{s}</option>
+                                                ))}
+                                            </select>
+                                            <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-white/40" />
+                                        </div>
                                     </td>
                                     <td className="p-6">
                                         <div className="font-bold text-white text-lg">{lead.businessName}</div>

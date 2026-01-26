@@ -39,9 +39,7 @@ export function Navbar() {
         )}
       >
         <div className="px-6 md:px-8 flex items-center justify-between">
-          <Link href="/">
-            <a className="flex items-center gap-4 group">
-              {/* Only Bilkul Wordmark as requested */}
+          <Link href="/" className="flex items-center gap-4 group">
               <div className="h-12 md:h-14 relative">
                  <img 
                     src="/brand/bilkul-wordmark.png" 
@@ -49,28 +47,27 @@ export function Navbar() {
                     className="h-full w-auto object-contain drop-shadow-[0_0_10px_rgba(45,107,255,0.3)] brightness-125 saturate-150 group-hover:scale-105 transition-transform duration-300"
                  />
               </div>
-            </a>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1 bg-white/[0.03] rounded-full p-1 border border-white/[0.05]">
             {navLinks.map((link) => (
-              <Link key={link.name} href={link.href}>
-                <a
-                  className={cn(
-                    "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 relative group",
-                    location === link.href ? "text-white" : "text-white/60 hover:text-white"
-                  )}
-                >
-                  <span className="relative z-10">{link.name}</span>
-                  {location === link.href && (
-                    <motion.div 
-                      layoutId="nav-pill"
-                      className="absolute inset-0 bg-white/10 rounded-full border border-white/5 shadow-inner"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                </a>
+              <Link 
+                key={link.name} 
+                href={link.href}
+                className={cn(
+                  "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 relative group",
+                  location === link.href ? "text-white" : "text-white/60 hover:text-white"
+                )}
+              >
+                <span className="relative z-10">{link.name}</span>
+                {location === link.href && (
+                  <motion.div 
+                    layoutId="nav-pill"
+                    className="absolute inset-0 bg-white/10 rounded-full border border-white/5 shadow-inner"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
               </Link>
             ))}
           </div>
@@ -108,17 +105,17 @@ export function Navbar() {
           >
             <div className="p-2 flex flex-col gap-1">
               {navLinks.map((link) => (
-                <Link key={link.name} href={link.href}>
-                  <a
-                    className={cn(
-                        "text-lg font-medium p-4 rounded-2xl transition-all flex justify-between items-center",
-                        location === link.href ? "bg-white/10 text-white" : "text-white/60 hover:bg-white/5 hover:text-white"
-                    )}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.name}
-                    {location === link.href && <div className="w-1.5 h-1.5 rounded-full bg-[var(--aquamarine)] shadow-[0_0_8px_currentColor]" />}
-                  </a>
+                <Link 
+                  key={link.name} 
+                  href={link.href}
+                  className={cn(
+                      "text-lg font-medium p-4 rounded-2xl transition-all flex justify-between items-center",
+                      location === link.href ? "bg-white/10 text-white" : "text-white/60 hover:bg-white/5 hover:text-white"
+                  )}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.name}
+                  {location === link.href && <div className="w-1.5 h-1.5 rounded-full bg-[var(--aquamarine)] shadow-[0_0_8px_currentColor]" />}
                 </Link>
               ))}
               <div className="h-px bg-white/5 my-2 mx-4" />
