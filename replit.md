@@ -61,8 +61,15 @@ Preferred communication style: Simple, everyday language.
 - **Drizzle Kit**: Schema management and migrations (`drizzle-kit push`)
 
 ### Third-Party Services (Configured but may need setup)
-- **Resend/Nodemailer**: Email notifications for lead submissions (requires `RESEND_API_KEY` or SMTP credentials)
+- **Resend/Nodemailer**: Email notifications for lead submissions (requires `RESEND_API_KEY` or SMTP credentials). User declined the Resend integration - if email notifications are needed, request `RESEND_API_KEY` as a secret manually.
 - **Calendly**: Optional booking integration (via `CALENDLY_URL` env var)
+
+## Admin Panel
+- **Passkey**: `bilkul2026` (hardcoded, for MVP only)
+- **Features**: 
+  - Leads tab: View all contact form submissions, update status (new/contacted/reviewing/closed)
+  - Demos tab: View all AI-generated demo prompts with brand info and keywords
+  - CSV Export: Export both leads and demos data
 
 ### Key NPM Packages
 - `drizzle-orm` + `pg`: Database connectivity

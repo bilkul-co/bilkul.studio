@@ -60,10 +60,8 @@ export function ServicesGrid() {
               We don't just build pages; we build engines for your business.
             </p>
           </div>
-          <Link href="/services">
-             <a className="text-white hover:text-[var(--aquamarine)] transition-colors flex items-center gap-2 text-sm font-medium group uppercase tracking-widest cursor-hover">
+          <Link href="/services" className="text-white hover:text-[var(--aquamarine)] transition-colors flex items-center gap-2 text-sm font-medium group uppercase tracking-widest cursor-hover">
                 View All Services <ArrowRight className="group-hover:translate-x-1 transition-transform w-4 h-4" />
-             </a>
           </Link>
         </motion.div>
 

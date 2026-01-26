@@ -90,11 +90,13 @@ export default function Admin() {
       ...data.map(row => 
         headers.map(h => {
           const val = row[h];
+          if (val === null || val === undefined) return "";
           if (Array.isArray(val)) return `"${val.join("; ")}"`;
-          if (typeof val === "string" && (val.includes(",") || val.includes('"'))) {
+          if (typeof val === "object") return `"${JSON.stringify(val).replace(/"/g, '""')}"`;
+          if (typeof val === "string" && (val.includes(",") || val.includes('"') || val.includes("\n"))) {
             return `"${val.replace(/"/g, '""')}"`;
           }
-          return val ?? "";
+          return val;
         }).join(",")
       )
     ].join("\n");
