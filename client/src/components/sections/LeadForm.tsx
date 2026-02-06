@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { transitions } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   serviceType: z.string().min(1, "Please select a service type"),
@@ -39,7 +40,11 @@ const steps = [
   { id: "contact", title: "Connect", subtitle: "How to reach you" },
 ];
 
-export function LeadForm() {
+interface LeadFormProps {
+  embedded?: boolean;
+}
+
+export function LeadForm({ embedded = false }: LeadFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -103,11 +108,22 @@ export function LeadForm() {
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 0));
 
   return (
-    <section className="py-32 relative overflow-hidden" id="contact">
+    <section
+      className={cn(
+        "relative overflow-hidden",
+        embedded ? "py-0" : "py-32"
+      )}
+      id="contact"
+    >
       {/* Aurora Background for Section */}
       <div className="absolute inset-0 aurora-bg opacity-20 pointer-events-none" />
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div
+        className={cn(
+          "relative z-10",
+          embedded ? "px-0" : "container mx-auto px-6"
+        )}
+      >
         <div className="max-w-5xl mx-auto">
           <motion.div 
             initial="initial"

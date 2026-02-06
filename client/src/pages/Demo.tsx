@@ -23,6 +23,10 @@ export default function DemoWizard() {
   const [step, setStep] = useState(1);
   const [prompt, setPrompt] = useState("");
   const [vibe, setVibe] = useState("Modern Minimal");
+  const [industry, setIndustry] = useState("");
+  const [audience, setAudience] = useState("");
+  const [primaryGoal, setPrimaryGoal] = useState("");
+  const [primaryCta, setPrimaryCta] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [loadingStepIndex, setLoadingStepIndex] = useState(0);
   const [, setLocation] = useLocation();
@@ -42,12 +46,29 @@ export default function DemoWizard() {
     }, 800);
 
     try {
-      const blueprint = await generatePageBlueprint(prompt, vibe);
+      const contextPrompt = [
+        prompt,
+        industry ? `Industry: ${industry}` : "",
+        audience ? `Audience: ${audience}` : "",
+        primaryGoal ? `Primary Goal: ${primaryGoal}` : "",
+        primaryCta ? `Primary CTA: ${primaryCta}` : "",
+      ]
+        .filter(Boolean)
+        .join(" | ");
+
+      const blueprint = await generatePageBlueprint(contextPrompt, vibe);
       
       const response = await fetch("/api/demo-blueprints", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          prompt,
+          meta: {
+            industry: industry || null,
+            audience: audience || null,
+            primaryGoal: primaryGoal || null,
+            primaryCta: primaryCta || null,
+          },
           brandName: blueprint.brandName,
           tagline: blueprint.tagline,
           tone: blueprint.tone,
@@ -156,10 +177,83 @@ export default function DemoWizard() {
             </motion.div>
           )}
 
-          {/* STEP 2: TONE & VIBE */}
+          {/* STEP 2: CONTEXT DETAILS */}
           {step === 2 && !isGenerating && (
             <motion.div
               key="step2"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+              transition={{ duration: 0.5 }}
+              className="space-y-10"
+            >
+              <div className="text-center space-y-4">
+                <h1 className="text-4xl md:text-5xl font-display font-bold">
+                  Project Context
+                </h1>
+                <p className="text-xl text-white/50 font-light max-w-lg mx-auto">
+                  These details sharpen the output and improve relevance.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="space-y-2">
+                  <label className="text-sm text-white/60 font-mono uppercase tracking-widest">Industry</label>
+                  <input
+                    value={industry}
+                    onChange={(e) => setIndustry(e.target.value)}
+                    placeholder="e.g., Fintech, Real Estate, Hospitality"
+                    className="w-full px-4 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white focus:outline-none focus:border-white/30 transition-all"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-white/60 font-mono uppercase tracking-widest">Target Audience</label>
+                  <input
+                    value={audience}
+                    onChange={(e) => setAudience(e.target.value)}
+                    placeholder="e.g., Enterprise buyers, UAE residents"
+                    className="w-full px-4 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white focus:outline-none focus:border-white/30 transition-all"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-white/60 font-mono uppercase tracking-widest">Primary Goal</label>
+                  <input
+                    value={primaryGoal}
+                    onChange={(e) => setPrimaryGoal(e.target.value)}
+                    placeholder="e.g., Generate leads, Book demos"
+                    className="w-full px-4 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white focus:outline-none focus:border-white/30 transition-all"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-white/60 font-mono uppercase tracking-widest">Primary CTA</label>
+                  <input
+                    value={primaryCta}
+                    onChange={(e) => setPrimaryCta(e.target.value)}
+                    placeholder="e.g., Book Consultation"
+                    className="w-full px-4 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white focus:outline-none focus:border-white/30 transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center pt-10 px-4">
+                <MotionButton variant="ghost" onClick={() => setStep(1)} className="text-white/50 hover:text-white">
+                  Back
+                </MotionButton>
+                <MotionButton
+                  size="lg"
+                  onClick={() => setStep(3)}
+                  className="rounded-full px-12 h-16 text-xl font-bold bg-gradient-to-r from-[var(--rare-blue)] to-[var(--aquamarine)] text-white shadow-[0_0_50px_-10px_rgba(45,107,255,0.4)] border-0 hover:scale-105 transition-transform"
+                >
+                  Continue <ChevronRight className="ml-2" />
+                </MotionButton>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 3: TONE & VIBE */}
+          {step === 3 && !isGenerating && (
+            <motion.div
+              key="step3"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
@@ -177,10 +271,10 @@ export default function DemoWizard() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {[
-                    { name: "Calm Luxury", desc: "Sophisticated, serif typography, soft transitions.", color: "bg-[#eaddcf]" },
-                    { name: "Modern Minimal", desc: "Clean lines, heavy whitespace, functional.", color: "bg-[#f5f5f5]" },
-                    { name: "Bold Premium", desc: "High contrast, large type, impactful imagery.", color: "bg-[#1a1a1a]" },
-                    { name: "Futuristic Glass", desc: "Dark mode, neon accents, glassmorphism.", color: "bg-[#0a0a2e]" }
+                  { name: "Calm Luxury", desc: "Sophisticated, serif typography, soft transitions.", color: "bg-[#eaddcf]" },
+                  { name: "Modern Minimal", desc: "Clean lines, heavy whitespace, functional.", color: "bg-[#f5f5f5]" },
+                  { name: "Bold Premium", desc: "High contrast, large type, impactful imagery.", color: "bg-[#1a1a1a]" },
+                  { name: "Futuristic Glass", desc: "Dark mode, neon accents, glassmorphism.", color: "bg-[#0a0a2e]" }
                 ].map((v) => (
                   <button
                     key={v.name}
@@ -207,7 +301,7 @@ export default function DemoWizard() {
               </div>
 
               <div className="flex justify-between items-center pt-10 px-4">
-                <MotionButton variant="ghost" onClick={() => setStep(1)} className="text-white/50 hover:text-white">
+                <MotionButton variant="ghost" onClick={() => setStep(2)} className="text-white/50 hover:text-white">
                   Back
                 </MotionButton>
                 <MotionButton
@@ -220,7 +314,6 @@ export default function DemoWizard() {
               </div>
             </motion.div>
           )}
-
           {/* LOADING STATE */}
           {isGenerating && (
             <motion.div

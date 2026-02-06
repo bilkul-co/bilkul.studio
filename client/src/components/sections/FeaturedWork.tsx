@@ -1,6 +1,5 @@
 import { GlassCard } from "@/components/ui/glass-card";
 import { MotionButton } from "@/components/ui/motion-button";
-import { ArrowUpRight } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { transitions } from "@/lib/motion";
@@ -11,7 +10,6 @@ const projects: Array<{
   image: string;
   tags: string[];
   summary: string;
-  link?: string;
 }> = [
   {
     title: "Dubai Future Foundation",
@@ -21,19 +19,67 @@ const projects: Array<{
     summary: "A unified digital gateway for Dubai's innovation ecosystem."
   },
   {
-    title: "Veneno Car Rental",
+    title: "Car Rentals",
     category: "Web Application",
     image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=2070&auto=format&fit=crop",
-    tags: ["Web App", "React", "Booking System"],
-    summary: "Premium car rental platform with seamless booking experience.",
-    link: "https://veneno-drive--Abdulhaadi71.replit.app"
+    tags: ["Web App", "Secure Payments", "Booking Engine"],
+    summary: "Premium car rental platform with seamless booking experience."
   },
   {
-    title: "Abu Dhabi Finance AI",
-    category: "Fintech Integration",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
-    tags: ["AI", "Dashboard", "Data Viz"],
-    summary: "Real-time predictive analytics for institutional investors."
+    title: "Vacation Homes",
+    category: "Holiday Home Company",
+    image: "https://images.unsplash.com/photo-1745750327932-7fb1d6f60b9b?auto=format&fit=crop&fm=jpg&q=60&w=3000",
+    tags: ["Property Management System", "Mobile Optimized", "Dynamic Pricing"],
+    summary: "Curated stays in Dubai's most exceptional spaces."
+  },
+  {
+    title: "Spa & Wellness Centres",
+    category: "Hospitality",
+    image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&fm=jpg&q=60&w=3000",
+    tags: ["Booking", "Memberships", "Experience Design"],
+    summary: "A serene wellness brand with modern booking and membership flows."
+  },
+  {
+    title: "Luxury Retail",
+    category: "E-Commerce",
+    image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&fm=jpg&q=60&w=3000",
+    tags: ["Commerce", "Branding", "Fulfillment"],
+    summary: "A premium retail experience with high-conversion storefront flows."
+  },
+  {
+    title: "Real Estate",
+    category: "Property",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
+    tags: ["Listings", "Lead Capture", "CRM"],
+    summary: "High-end property presentation with investor-ready lead funnels."
+  },
+  {
+    title: "Logistics",
+    category: "Supply Chain",
+    image: "https://images.unsplash.com/photo-1578574577315-3fbeb0cecdc2?auto=format&fit=crop&fm=jpg&q=60&w=3000",
+    tags: ["Tracking", "Operations", "Dashboards"],
+    summary: "Real-time fleet visibility with modern dispatch tooling."
+  },
+  {
+    title: "Healthcare",
+    category: "Clinics",
+    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&fm=jpg&q=60&w=3000",
+    tags: ["Patient Portal", "Scheduling", "Compliance"],
+    summary: "Patient-first systems that reduce friction and improve outcomes."
+  },
+  {
+    title: "Food & Beverage",
+    category: "Restaurants",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&fm=jpg&q=60&w=3000",
+    tags: ["Online Ordering", "Loyalty", "POS"],
+    summary: "Digitized ordering, loyalty, and guest engagement flows."
+  },
+  {
+    title: "Construction",
+    category: "Infrastructure",
+    image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&fm=jpg&q=60&w=3000",
+    tags: ["Project Tracking", "Bids", "Field Ops"],
+    summary: "End-to-end visibility across complex build programs."
   }
 ];
 
@@ -73,7 +119,7 @@ export function FeaturedWork() {
                 hoverEffect 
                 spotlight
                 noPadding
-                className="group cursor-pointer h-[550px] flex flex-col border-white/5 bg-white/[0.02]"
+                className="group h-[550px] flex flex-col border-white/5 bg-white/[0.02]"
                 >
                 <div className="relative h-2/3 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent z-10 opacity-80" />
@@ -93,9 +139,8 @@ export function FeaturedWork() {
                 
                 <div className="p-8 flex flex-col flex-grow justify-between bg-white/[0.01] border-t border-white/5 relative z-20">
                     <div>
-                    <h3 className="text-2xl font-bold mb-3 flex items-center gap-2 text-white group-hover:text-primary transition-colors">
+                    <h3 className="text-2xl font-bold mb-3 text-white">
                         {project.title}
-                        <ArrowUpRight size={24} className="opacity-0 -translate-y-2 translate-x-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300 text-primary" />
                     </h3>
                     <p className="text-muted-foreground mb-6 line-clamp-2">{project.summary}</p>
                     <div className="flex gap-2 flex-wrap">
@@ -112,11 +157,7 @@ export function FeaturedWork() {
             
             return (
               <motion.div key={index} variants={transitions.stagger.item as any}>
-                {project.link ? (
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="block">
-                    {cardContent}
-                  </a>
-                ) : cardContent}
+                {cardContent}
               </motion.div>
             );
           })}

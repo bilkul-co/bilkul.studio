@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useLocation } from "wouter";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -8,8 +10,58 @@ import accentImg from "@assets/generated_images/abstract_chrome_3d_shape_with_ir
 import liquidImg from "@assets/generated_images/dark_iridescent_liquid_metal_flow_abstract_3d.png";
 import { motion } from "framer-motion";
 import { transitions } from "@/lib/motion";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function AIIntegration() {
+  const [, setLocation] = useLocation();
+  const [selectedSpec, setSelectedSpec] = useState<{
+    title: string;
+    specs: string[];
+  } | null>(null);
+
+  const offerings = [
+    {
+      icon: Zap,
+      title: "Workflow Automation",
+      desc: "Automate email triage, ticket routing, and CRM updates.",
+      specs: [
+        "Email and inbox automation workflows",
+        "CRM sync + tagging + lead routing",
+        "Human-in-the-loop escalation paths",
+        "Audit logs and change tracking"
+      ],
+    },
+    {
+      icon: BrainCircuit,
+      title: "Internal Knowledge",
+      desc: "RAG-based chat agents trained on your company docs.",
+      specs: [
+        "Secure document indexing (PDF, Notion, Drive)",
+        "Role-based access and permissions",
+        "Source citations in every response",
+        "Daily refresh and drift monitoring"
+      ],
+    },
+    {
+      icon: Database,
+      title: "Data Intelligence",
+      desc: "Weekly AI-generated summaries of your operational metrics.",
+      specs: [
+        "Executive weekly performance digest",
+        "Anomaly detection and alerts",
+        "Automated KPI summaries by team",
+        "Data warehouse integrations"
+      ],
+    },
+  ];
+
+  const handleUseCases = () => {
+    document.getElementById("use-cases")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden selection:bg-primary/20 relative home-wrapper">
       <FloatingObjects />
@@ -32,11 +84,24 @@ export default function AIIntegration() {
                 <span className="text-gradient-aurora">Supercharged.</span>
               </h1>
               <p className="text-xl text-white/60 mb-10 leading-relaxed max-w-xl font-light">
-                We implement secure, practical AI layers that automate operational drudgery and unlock new insights from your existing data. No hype—just systems that work.
+                We implement secure, practical AI layers that automate operational drudgery and unlock new insights from your existing data. No hype, just systems that work.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <MotionButton size="lg" className="rounded-full h-12 px-8 bg-white text-black hover:bg-white/90">Start AI Audit</MotionButton>
-                <MotionButton variant="outline" size="lg" className="rounded-full h-12 px-8 border-white/10 hover:bg-white/5 text-white">View Use Cases</MotionButton>
+                <MotionButton
+                  size="lg"
+                  className="rounded-full h-12 px-8 bg-white text-black hover:bg-white/90"
+                  onClick={() => setLocation("/contact")}
+                >
+                  Start AI Audit
+                </MotionButton>
+                <MotionButton
+                  variant="outline"
+                  size="lg"
+                  className="rounded-full h-12 px-8 border-white/10 hover:bg-white/5 text-white"
+                  onClick={handleUseCases}
+                >
+                  View Use Cases
+                </MotionButton>
               </div>
             </motion.div>
             
@@ -64,12 +129,8 @@ export default function AIIntegration() {
           </div>
 
           {/* Offerings */}
-          <div className="grid md:grid-cols-3 gap-6 mb-32">
-            {[
-              { icon: Zap, title: "Workflow Automation", desc: "Automate email triage, ticket routing, and CRM updates." },
-              { icon: BrainCircuit, title: "Internal Knowledge", desc: "RAG-based chat agents trained on your company docs." },
-              { icon: Database, title: "Data Intelligence", desc: "Weekly AI-generated summaries of your operational metrics." }
-            ].map((item, i) => (
+          <div id="use-cases" className="grid md:grid-cols-3 gap-6 mb-32">
+            {offerings.map((item, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
@@ -83,9 +144,12 @@ export default function AIIntegration() {
                     <h3 className="text-2xl font-bold mb-4 text-white">{item.title}</h3>
                     <p className="text-white/60 text-lg leading-relaxed font-light">{item.desc}</p>
                     </div>
-                    <div className="mt-8 flex items-center text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                    View Specs <ArrowRight className="ml-2 w-4 h-4" />
-                    </div>
+                    <button
+                      onClick={() => setSelectedSpec({ title: item.title, specs: item.specs })}
+                      className="mt-8 flex items-center text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      View Specs <ArrowRight className="ml-2 w-4 h-4" />
+                    </button>
                 </GlassCard>
               </motion.div>
             ))}
@@ -141,6 +205,22 @@ export default function AIIntegration() {
         </div>
       </main>
       <Footer />
+
+      <Dialog open={!!selectedSpec} onOpenChange={(open) => !open && setSelectedSpec(null)}>
+        <DialogContent className="max-w-xl bg-[#0b0d14] border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold font-display">{selectedSpec?.title} Specs</DialogTitle>
+          </DialogHeader>
+          <ul className="space-y-3 text-sm text-white/80">
+            {selectedSpec?.specs.map((spec, idx) => (
+              <li key={idx} className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--aquamarine)]" />
+                <span>{spec}</span>
+              </li>
+            ))}
+          </ul>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

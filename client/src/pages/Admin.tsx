@@ -7,6 +7,7 @@ import { Loader2, Search, Filter, Download, User, ArrowUpRight, CheckCircle2, Cl
 import { motion, AnimatePresence } from "framer-motion";
 import { transitions } from "@/lib/motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface Lead {
   id: string;
@@ -24,6 +25,13 @@ interface Lead {
 
 interface DemoBlueprint {
   id: string;
+  prompt: string | null;
+  meta?: {
+    industry?: string | null;
+    audience?: string | null;
+    primaryGoal?: string | null;
+    primaryCta?: string | null;
+  } | null;
   brandName: string;
   tagline: string;
   tone: string;
@@ -38,15 +46,39 @@ const STATUS_OPTIONS = ["new", "contacted", "reviewing", "closed"];
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [selectedDemo, setSelectedDemo] = useState<DemoBlueprint | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("leads");
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    let mounted = true;
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("/api/admin/me", { credentials: "include" });
+        if (response.ok && mounted) {
+          setIsAuthenticated(true);
+        }
+      } catch {
+        // ignore auth check failures
+      }
+    };
+    checkAuth();
+    return () => {
+      mounted = false;
+    };
+  }, []);
   
   const { data: leads = [], isLoading } = useQuery<Lead[]>({
     queryKey: ["leads"],
     queryFn: async () => {
-      const response = await fetch("/api/leads");
+      const response = await fetch("/api/leads", { credentials: "include" });
       if (!response.ok) throw new Error("Failed to fetch leads");
       return response.json();
     },
@@ -56,7 +88,7 @@ export default function Admin() {
   const { data: demos = [], isLoading: isLoadingDemos } = useQuery<DemoBlueprint[]>({
     queryKey: ["demo-blueprints"],
     queryFn: async () => {
-      const response = await fetch("/api/demo-blueprints");
+      const response = await fetch("/api/demo-blueprints", { credentials: "include" });
       if (!response.ok) throw new Error("Failed to fetch demos");
       return response.json();
     },
@@ -69,6 +101,7 @@ export default function Admin() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
+        credentials: "include",
       });
       if (!response.ok) throw new Error("Failed to update status");
       return response.json();
@@ -108,13 +141,52 @@ export default function Admin() {
     link.click();
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const filteredLeads = leads.filter((lead) => {
+    const term = searchTerm.trim().toLowerCase();
+    const matchesTerm =
+      !term ||
+      lead.businessName.toLowerCase().includes(term) ||
+      lead.email.toLowerCase().includes(term) ||
+      (lead.industry || "").toLowerCase().includes(term) ||
+      lead.serviceType.toLowerCase().includes(term);
+    const matchesStatus = statusFilter === "all" || lead.status === statusFilter;
+    return matchesTerm && matchesStatus;
+  });
+
+  const inquiries = leads.filter(
+    (lead) =>
+      lead.serviceType.toLowerCase() === "contact" ||
+      lead.goals.includes("general-inquiry")
+  );
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === "bilkul2026") {
+    setIsLoggingIn(true);
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
+      if (!response.ok) throw new Error("Invalid credentials");
       setIsAuthenticated(true);
+      setPassword("");
       toast({ title: "System Unlocked", description: "Welcome to Command Center." });
-    } else {
+    } catch {
       toast({ title: "Access Denied", description: "Invalid credentials.", variant: "destructive" });
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
+    } finally {
+      setIsAuthenticated(false);
+      setSelectedLead(null);
+      setSelectedDemo(null);
     }
   };
 
@@ -134,15 +206,24 @@ export default function Admin() {
             <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
                 <input 
+                    type="text" 
+                    placeholder="USERNAME"
+                    className="w-full px-4 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white focus:outline-none focus:border-[var(--rare-blue)]/50 focus:bg-white/[0.05] transition-all text-center tracking-[0.2em] font-mono text-base placeholder:text-white/20"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    autoComplete="username"
+                />
+                <input 
                     type="password" 
-                    placeholder="ENTER PASSKEY"
+                    placeholder="PASSWORD"
                     className="w-full px-4 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white focus:outline-none focus:border-[var(--rare-blue)]/50 focus:bg-white/[0.05] transition-all text-center tracking-[0.3em] font-mono text-lg placeholder:text-white/20"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
                 />
             </div>
-            <MotionButton type="submit" className="w-full h-14 rounded-xl bg-white text-black hover:bg-white/90 font-bold shadow-lg shadow-white/10 tracking-wider">
-                AUTHENTICATE
+            <MotionButton type="submit" disabled={isLoggingIn} className="w-full h-14 rounded-xl bg-white text-black hover:bg-white/90 font-bold shadow-lg shadow-white/10 tracking-wider">
+                {isLoggingIn ? "VERIFYING..." : "AUTHENTICATE"}
             </MotionButton>
             </form>
         </GlassCard>
@@ -172,7 +253,7 @@ export default function Admin() {
                 >
                     <Download size={14} /> Export CSV
                 </MotionButton>
-                <MotionButton variant="ghost" size="sm" onClick={() => setIsAuthenticated(false)} className="text-white/60 hover:text-white hover:bg-white/5">
+                <MotionButton variant="ghost" size="sm" onClick={handleLogout} className="text-white/60 hover:text-white hover:bg-white/5">
                     Log Out
                 </MotionButton>
             </div>
@@ -180,7 +261,7 @@ export default function Admin() {
 
         {/* Navigation Tabs */}
         <div className="flex gap-6 border-b border-white/10 mb-8 overflow-x-auto">
-            {["leads", "demos", "settings"].map((tab) => (
+            {["leads", "inquiries", "demos", "settings"].map((tab) => (
                 <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -230,12 +311,24 @@ export default function Admin() {
                                 type="text" 
                                 placeholder="Search leads..." 
                                 className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/[0.03] border border-white/10 text-sm text-white focus:outline-none focus:border-white/20 transition-colors placeholder:text-white/20"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <div className="flex gap-2">
-                            <button className="px-5 py-3 rounded-xl bg-white/[0.03] border border-white/10 text-sm font-medium text-white hover:bg-white/[0.05] transition-colors flex items-center gap-2">
-                                <Filter size={14} /> Filter
-                            </button>
+                        <div className="flex gap-2 items-center">
+                            <Filter size={14} className="text-white/40" />
+                            <select
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value)}
+                                className="px-4 py-3 rounded-xl bg-white/[0.03] border border-white/10 text-sm font-medium text-white focus:outline-none focus:border-white/20 transition-colors"
+                            >
+                                <option value="all" className="bg-[#0a0a0a]">All Statuses</option>
+                                {STATUS_OPTIONS.map((status) => (
+                                    <option key={status} value={status} className="bg-[#0a0a0a]">
+                                        {status}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
 
@@ -249,6 +342,10 @@ export default function Admin() {
                             <div className="text-center py-20 text-white/40">
                                 No leads yet. They'll appear here once someone submits the contact form.
                             </div>
+                        ) : filteredLeads.length === 0 ? (
+                            <div className="text-center py-20 text-white/40">
+                                No leads match your search.
+                            </div>
                         ) : (
                             <table className="w-full text-left">
                                 <thead>
@@ -259,10 +356,11 @@ export default function Admin() {
                                     <th className="p-6 font-medium">Service</th>
                                     <th className="p-6 font-medium">Timeline</th>
                                     <th className="p-6 font-medium">Date</th>
+                                    <th className="p-6 font-medium">Details</th>
                                 </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
-                                {leads.map((lead, i) => (
+                                {filteredLeads.map((lead, i) => (
                                     <motion.tr 
                                         key={lead.id} 
                                         initial={{ opacity: 0, y: 10 }}
@@ -310,6 +408,82 @@ export default function Admin() {
                                     </td>
                                     <td className="p-6 text-sm text-white/60">
                                         {new Date(lead.createdAt).toLocaleDateString()}
+                                    </td>
+                                    <td className="p-6 text-sm">
+                                        <button
+                                            onClick={() => setSelectedLead(lead)}
+                                            className="px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-xs text-white/70 hover:bg-white/[0.08] hover:text-white transition-colors"
+                                        >
+                                            View
+                                        </button>
+                                    </td>
+                                    </motion.tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                    </GlassCard>
+                </motion.div>
+            )}
+
+            {activeTab === "inquiries" && (
+                <motion.div
+                    key="inquiries"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <GlassCard className="overflow-hidden p-0 border-white/10 bg-black/40 backdrop-blur-xl">
+                    <div className="overflow-x-auto">
+                        {isLoading ? (
+                            <div className="flex items-center justify-center p-20">
+                                <Loader2 className="animate-spin text-[var(--aquamarine)]" size={32} />
+                            </div>
+                        ) : inquiries.length === 0 ? (
+                            <div className="text-center py-20 text-white/40">
+                                No inquiries yet. Contact form submissions will appear here.
+                            </div>
+                        ) : (
+                            <table className="w-full text-left">
+                                <thead>
+                                <tr className="border-b border-white/10 text-white/40 text-xs uppercase tracking-wider bg-white/[0.02]">
+                                    <th className="p-6 font-medium">Name/Company</th>
+                                    <th className="p-6 font-medium">Email</th>
+                                    <th className="p-6 font-medium">Phone</th>
+                                    <th className="p-6 font-medium">Date</th>
+                                    <th className="p-6 font-medium">Details</th>
+                                </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/5">
+                                {inquiries.map((lead, i) => (
+                                    <motion.tr 
+                                        key={lead.id} 
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: i * 0.05 }}
+                                        className="hover:bg-white/[0.04] transition-colors group cursor-pointer"
+                                    >
+                                    <td className="p-6">
+                                        <div className="font-bold text-white text-lg">{lead.businessName}</div>
+                                    </td>
+                                    <td className="p-6">
+                                        <div className="text-sm font-medium text-white/90">{lead.email}</div>
+                                    </td>
+                                    <td className="p-6">
+                                        <div className="text-sm text-white/60">{lead.phone || "—"}</div>
+                                    </td>
+                                    <td className="p-6 text-sm text-white/60">
+                                        {new Date(lead.createdAt).toLocaleDateString()}
+                                    </td>
+                                    <td className="p-6 text-sm">
+                                        <button
+                                            onClick={() => setSelectedLead(lead)}
+                                            className="px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-xs text-white/70 hover:bg-white/[0.08] hover:text-white transition-colors"
+                                        >
+                                            View
+                                        </button>
                                     </td>
                                     </motion.tr>
                                 ))}
@@ -367,6 +541,7 @@ export default function Admin() {
                                     <th className="p-6 font-medium">Style</th>
                                     <th className="p-6 font-medium">Keywords</th>
                                     <th className="p-6 font-medium">Date</th>
+                                    <th className="p-6 font-medium">Details</th>
                                 </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
@@ -410,6 +585,14 @@ export default function Admin() {
                                     <td className="p-6 text-sm text-white/60">
                                         {new Date(demo.createdAt).toLocaleDateString()}
                                     </td>
+                                    <td className="p-6 text-sm">
+                                        <button
+                                            onClick={() => setSelectedDemo(demo)}
+                                            className="px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-xs text-white/70 hover:bg-white/[0.08] hover:text-white transition-colors"
+                                        >
+                                            View
+                                        </button>
+                                    </td>
                                     </motion.tr>
                                 ))}
                                 </tbody>
@@ -421,6 +604,106 @@ export default function Admin() {
             )}
         </AnimatePresence>
       </div>
+
+      <Dialog open={!!selectedLead} onOpenChange={(open) => !open && setSelectedLead(null)}>
+        <DialogContent className="max-w-2xl bg-[#0b0d14] border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold font-display">Lead Details</DialogTitle>
+          </DialogHeader>
+          {selectedLead && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Company</div>
+                <div className="text-white/90 font-medium">{selectedLead.businessName}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Industry</div>
+                <div className="text-white/90 font-medium">{selectedLead.industry || "—"}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Service Type</div>
+                <div className="text-white/90 font-medium">{selectedLead.serviceType}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Timeline</div>
+                <div className="text-white/90 font-medium">{selectedLead.timeline}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Email</div>
+                <div className="text-white/90 font-medium">{selectedLead.email}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Phone</div>
+                <div className="text-white/90 font-medium">{selectedLead.phone || "—"}</div>
+              </div>
+              <div className="md:col-span-2">
+                <div className="text-white/40 uppercase text-xs mb-1">Goals</div>
+                <div className="text-white/90 font-medium">{selectedLead.goals.join(", ")}</div>
+              </div>
+              <div className="md:col-span-2">
+                <div className="text-white/40 uppercase text-xs mb-1">Details</div>
+                <div className="text-white/80 whitespace-pre-wrap">{selectedLead.details || "—"}</div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!selectedDemo} onOpenChange={(open) => !open && setSelectedDemo(null)}>
+        <DialogContent className="max-w-2xl bg-[#0b0d14] border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold font-display">Demo Details</DialogTitle>
+          </DialogHeader>
+          {selectedDemo && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div className="md:col-span-2">
+                <div className="text-white/40 uppercase text-xs mb-1">Prompt</div>
+                <div className="text-white/90 font-medium">{selectedDemo.prompt || "—"}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Industry</div>
+                <div className="text-white/90 font-medium">{selectedDemo.meta?.industry || "—"}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Audience</div>
+                <div className="text-white/90 font-medium">{selectedDemo.meta?.audience || "—"}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Primary Goal</div>
+                <div className="text-white/90 font-medium">{selectedDemo.meta?.primaryGoal || "—"}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Primary CTA</div>
+                <div className="text-white/90 font-medium">{selectedDemo.meta?.primaryCta || "—"}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Brand</div>
+                <div className="text-white/90 font-medium">{selectedDemo.brandName}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Tagline</div>
+                <div className="text-white/90 font-medium">{selectedDemo.tagline}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Tone</div>
+                <div className="text-white/90 font-medium">{selectedDemo.tone}</div>
+              </div>
+              <div>
+                <div className="text-white/40 uppercase text-xs mb-1">Primary Color</div>
+                <div className="text-white/90 font-medium">{selectedDemo.primaryColor}</div>
+              </div>
+              <div className="md:col-span-2">
+                <div className="text-white/40 uppercase text-xs mb-1">Keywords</div>
+                <div className="text-white/90 font-medium">
+                  {selectedDemo.promptAnchors && selectedDemo.promptAnchors.length > 0
+                    ? selectedDemo.promptAnchors.join(", ")
+                    : "—"}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

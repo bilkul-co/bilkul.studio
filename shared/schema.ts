@@ -42,6 +42,8 @@ export type Lead = typeof leads.$inferSelect;
 
 export const demoBlueprints = pgTable("demo_blueprints", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  prompt: text("prompt"),
+  meta: jsonb("meta"),
   brandName: text("brand_name").notNull(),
   tagline: text("tagline").notNull(),
   tone: text("tone").notNull(),
