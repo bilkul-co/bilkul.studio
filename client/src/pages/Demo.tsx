@@ -6,6 +6,7 @@ import { FluidBackground } from "@/components/ui/fluid-background";
 import { ArrowLeft, Sparkles, Wand2, CheckCircle2, ChevronRight, Palette } from "lucide-react";
 import { generatePageBlueprint } from "@/lib/demo-generator";
 import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 const LOADING_STEPS = [
   "Analyzing industry patterns...",
@@ -58,32 +59,30 @@ export default function DemoWizard() {
 
       const blueprint = await generatePageBlueprint(contextPrompt, vibe);
       
-      const response = await fetch("/api/demo-blueprints", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt,
-          meta: {
-            industry: industry || null,
-            audience: audience || null,
-            primaryGoal: primaryGoal || null,
-            primaryCta: primaryCta || null,
+      const { data, error } = await supabase
+        .from("demo_blueprints")
+        .insert([
+          {
+            prompt,
+            meta: {
+              industry: industry || null,
+              audience: audience || null,
+              primaryGoal: primaryGoal || null,
+              primaryCta: primaryCta || null,
+            },
+            brand_name: blueprint.brandName,
+            tagline: blueprint.tagline,
+            tone: blueprint.tone,
+            primary_color: blueprint.primaryColor,
+            sections: blueprint.sections,
+            prompt_anchors: blueprint.promptAnchors,
+            coverage_score: blueprint.coverageScore?.toString(),
           },
-          brandName: blueprint.brandName,
-          tagline: blueprint.tagline,
-          tone: blueprint.tone,
-          primaryColor: blueprint.primaryColor,
-          sections: blueprint.sections,
-          promptAnchors: blueprint.promptAnchors,
-          coverageScore: blueprint.coverageScore?.toString(),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to save blueprint");
-      }
-
-      const savedBlueprint = await response.json();
+        ])
+        .select()
+        .single();
+      if (error) throw error;
+      const savedBlueprint = data;
       queryClient.setQueryData(["demo-blueprint"], savedBlueprint);
       localStorage.setItem("latest-demo-blueprint", JSON.stringify(savedBlueprint));
       

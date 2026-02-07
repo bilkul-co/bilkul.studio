@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import { transitions } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
 
 const formSchema = z.object({
   serviceType: z.string().min(1, "Please select a service type"),
@@ -66,15 +67,19 @@ export function LeadForm({ embedded = false }: LeadFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit lead");
-      }
+      const { error } = await supabase.from("leads").insert([
+        {
+          service_type: values.serviceType,
+          business_name: values.businessName,
+          industry: values.industry || null,
+          goals: values.goals,
+          timeline: values.timeline,
+          email: values.email,
+          phone: values.phone || null,
+          details: values.details || null,
+        },
+      ]);
+      if (error) throw error;
 
       toast({
         title: "Inquiry Received",

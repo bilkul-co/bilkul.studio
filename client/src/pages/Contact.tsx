@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { GlassCard } from "@/components/ui/glass-card";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -20,21 +21,19 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
+      const { error } = await supabase.from("leads").insert([
+        {
+          service_type: "Contact",
+          business_name: company.trim() || name.trim(),
+          industry: company.trim() ? "Unknown" : null,
+          goals: ["general-inquiry"],
+          timeline: "flexible",
           email: email.trim(),
-          company: company.trim() || undefined,
-          phone: phone.trim() || undefined,
-          message: message.trim(),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit contact form");
-      }
+          phone: phone.trim() || null,
+          details: message.trim(),
+        },
+      ]);
+      if (error) throw error;
 
       toast({
         title: "Message sent",

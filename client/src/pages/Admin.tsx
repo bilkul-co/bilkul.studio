@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { transitions } from "@/lib/motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { supabase } from "@/lib/supabase";
 
 interface Lead {
   id: string;
@@ -44,9 +45,70 @@ interface DemoBlueprint {
 
 const STATUS_OPTIONS = ["new", "contacted", "reviewing", "closed"];
 
+type LeadRow = {
+  id: string;
+  service_type: string;
+  business_name: string;
+  industry: string | null;
+  goals: string[];
+  timeline: string;
+  email: string;
+  phone: string | null;
+  details: string | null;
+  status: string;
+  created_at: string;
+};
+
+type DemoBlueprintRow = {
+  id: string;
+  prompt: string | null;
+  meta: {
+    industry?: string | null;
+    audience?: string | null;
+    primaryGoal?: string | null;
+    primaryCta?: string | null;
+  } | null;
+  brand_name: string;
+  tagline: string;
+  tone: string;
+  primary_color: string;
+  sections: any;
+  prompt_anchors: string[] | null;
+  coverage_score: string | null;
+  created_at: string;
+};
+
+const toLead = (row: LeadRow): Lead => ({
+  id: row.id,
+  serviceType: row.service_type,
+  businessName: row.business_name,
+  industry: row.industry,
+  goals: row.goals,
+  timeline: row.timeline,
+  email: row.email,
+  phone: row.phone,
+  details: row.details,
+  status: row.status,
+  createdAt: row.created_at,
+});
+
+const toDemo = (row: DemoBlueprintRow): DemoBlueprint => ({
+  id: row.id,
+  prompt: row.prompt,
+  meta: row.meta,
+  brandName: row.brand_name,
+  tagline: row.tagline,
+  tone: row.tone,
+  primaryColor: row.primary_color,
+  sections: row.sections,
+  promptAnchors: row.prompt_anchors,
+  coverageScore: row.coverage_score,
+  createdAt: row.created_at,
+});
+
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
@@ -60,27 +122,36 @@ export default function Admin() {
   useEffect(() => {
     let mounted = true;
     const checkAuth = async () => {
-      try {
-        const response = await fetch("/api/admin/me", { credentials: "include" });
-        if (response.ok && mounted) {
-          setIsAuthenticated(true);
-        }
-      } catch {
-        // ignore auth check failures
-      }
+      const { data } = await supabase.auth.getSession();
+      if (!mounted) return;
+      const session = data.session;
+      const isAdmin =
+        (session?.user.app_metadata as any)?.is_admin === true ||
+        (session?.user.user_metadata as any)?.is_admin === true;
+      setIsAuthenticated(!!session && isAdmin);
     };
     checkAuth();
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      const isAdmin =
+        (session?.user.app_metadata as any)?.is_admin === true ||
+        (session?.user.user_metadata as any)?.is_admin === true;
+      setIsAuthenticated(!!session && isAdmin);
+    });
     return () => {
       mounted = false;
+      listener.subscription.unsubscribe();
     };
   }, []);
   
   const { data: leads = [], isLoading } = useQuery<Lead[]>({
     queryKey: ["leads"],
     queryFn: async () => {
-      const response = await fetch("/api/leads", { credentials: "include" });
-      if (!response.ok) throw new Error("Failed to fetch leads");
-      return response.json();
+      const { data, error } = await supabase
+        .from("leads")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data || []).map((row) => toLead(row as LeadRow));
     },
     enabled: isAuthenticated,
   });
@@ -88,23 +159,26 @@ export default function Admin() {
   const { data: demos = [], isLoading: isLoadingDemos } = useQuery<DemoBlueprint[]>({
     queryKey: ["demo-blueprints"],
     queryFn: async () => {
-      const response = await fetch("/api/demo-blueprints", { credentials: "include" });
-      if (!response.ok) throw new Error("Failed to fetch demos");
-      return response.json();
+      const { data, error } = await supabase
+        .from("demo_blueprints")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data || []).map((row) => toDemo(row as DemoBlueprintRow));
     },
     enabled: isAuthenticated,
   });
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const response = await fetch(`/api/leads/${id}/status`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-        credentials: "include",
-      });
-      if (!response.ok) throw new Error("Failed to update status");
-      return response.json();
+      const { data, error } = await supabase
+        .from("leads")
+        .update({ status })
+        .eq("id", id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["leads"] });
@@ -163,13 +237,20 @@ export default function Admin() {
     e.preventDefault();
     setIsLoggingIn(true);
     try {
-      const response = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username, password }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
       });
-      if (!response.ok) throw new Error("Invalid credentials");
+      if (error || !data.session) {
+        throw error || new Error("Invalid credentials");
+      }
+      const isAdmin =
+        (data.session.user.app_metadata as any)?.is_admin === true ||
+        (data.session.user.user_metadata as any)?.is_admin === true;
+      if (!isAdmin) {
+        await supabase.auth.signOut();
+        throw new Error("Not authorized");
+      }
       setIsAuthenticated(true);
       setPassword("");
       toast({ title: "System Unlocked", description: "Welcome to Command Center." });
@@ -182,7 +263,7 @@ export default function Admin() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
+      await supabase.auth.signOut();
     } finally {
       setIsAuthenticated(false);
       setSelectedLead(null);
@@ -206,12 +287,12 @@ export default function Admin() {
             <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
                 <input 
-                    type="text" 
-                    placeholder="USERNAME"
+                    type="email" 
+                    placeholder="EMAIL"
                     className="w-full px-4 py-4 rounded-xl bg-white/[0.03] border border-white/10 text-white focus:outline-none focus:border-[var(--rare-blue)]/50 focus:bg-white/[0.05] transition-all text-center tracking-[0.2em] font-mono text-base placeholder:text-white/20"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    autoComplete="username"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
                 />
                 <input 
                     type="password" 
