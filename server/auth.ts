@@ -3,7 +3,7 @@ import { promisify } from "util";
 import type { NextFunction, Request, Response } from "express";
 import { storage } from "./storage";
 import { db } from "./db";
-import { users } from "@shared/schema";
+import { users } from "../shared/schema";
 import { eq } from "drizzle-orm";
 
 const scryptAsync = promisify(crypto.scrypt);

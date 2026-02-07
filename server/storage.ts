@@ -8,7 +8,7 @@ import {
   type InsertLead,
   type DemoBlueprint,
   type InsertDemoBlueprint
-} from "@shared/schema";
+} from "../shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
